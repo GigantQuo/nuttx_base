@@ -1,0 +1,14 @@
+include:
+    - ../../docker-compose.yml
+
+services:
+# КОНТЕЙНЕР СБОРКИ
+  nuttx_builder:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.build
+    container_name: nuttx_builder
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    profiles: ["build"]

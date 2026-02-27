@@ -1,0 +1,146 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config INDUSTRY_APC3
+	bool "APC3 firmwares"
+	default n
+	---help---
+		Enable or disable the Arlan PonCat3 different
+		instances of firmware.
+
+
+if INDUSTRY_APC3
+
+config INDUSTRY_APC3_PROGNAME
+	string "Program name"
+	default "apc3"
+	---help---
+		This is the name of the program that will be used when the NSH ELF
+		program is installed.
+
+config INDUSTRY_APC3_PRIORITY
+	int "apc3 task priority"
+	default 100
+
+config INDUSTRY_APC3_STACKSIZE
+	int "apc3 stack size"
+	default DEFAULT_TASK_STACKSIZE
+
+
+menu "Arlan-PonCat3 systems"
+
+
+config INDUSTRY_APC3_SYSTEM_0
+	bool "Enable SYSTEM_0 of APC3 firmware"
+	default n
+	---help---
+		Enable or disable the Arlan PonCat3 SYSTEM_0:
+		Debug Console through NSH.
+
+if INDUSTRY_APC3_SYSTEM_0
+config INDUSTRY_APC3_SYSTEM_0_PRIORITY
+	int "SYSTEM_0 task priority"
+	default 100
+
+config INDUSTRY_APC3_SYSTEM_0_STACKSIZE
+	int "SYSTEM_0 stack size"
+	default SYSTEM_NSH_STACKSIZE
+endif # INDUSTRY_APC3_SYSTEM_0
+
+
+
+config INDUSTRY_APC3_SYSTEM_1
+	bool "Enable SYSTEM_1 of APC3 firmware"
+	default n
+	---help---
+		Enable or disable the Arlan PonCat3 SYSTEM_1:
+		Debug Console through NSH.
+
+if INDUSTRY_APC3_SYSTEM_1
+config INDUSTRY_APC3_SYSTEM_1_PRIORITY
+	int "SYSTEM_1 task priority"
+	default 96
+
+config INDUSTRY_APC3_SYSTEM_1_STACKSIZE
+	int "SYSTEM_1 stack size"
+	default DEFAULT_TASK_STACKSIZE
+endif # INDUSTRY_APC3_SYSTEM_1
+
+
+
+config INDUSTRY_APC3_SYSTEM_2
+	bool "Enable SYSTEM_2 of APC3 firmware"
+	default n
+	---help---
+		Enable or disable the Arlan PonCat3 SYSTEM_2:
+		Debug Console through NSH.
+
+if INDUSTRY_APC3_SYSTEM_2
+config INDUSTRY_APC3_SYSTEM_2_PRIORITY
+	int "SYSTEM_2 task priority"
+	default 99
+
+config INDUSTRY_APC3_SYSTEM_2_STACKSIZE
+	int "SYSTEM_2 stack size"
+	default DEFAULT_TASK_STACKSIZE
+
+config INDUSTRY_APC3_SYSTEM_2_RESERVED
+	bool "Redundancy algorithm"
+	default n
+	---help---
+		Enable the redundancy algorithm of the
+		UPxx01R PUs:
+		When there is both functional then only left PU is work,
+		otherwise if there is only one functional PU then it is
+		working.
+		Only for Arlan-3448GE-S or Arlan-3424GE-S variants.
+
+endif # INDUSTRY_APC3_SYSTEM_2
+
+
+
+config INDUSTRY_APC3_SYSTEM_3
+	bool "Enable SYSTEM_3 of APC3 firmware"
+	default n
+	---help---
+		Enable or disable the Arlan PonCat3 SYSTEM_3:
+		Debug Console through NSH.
+
+if INDUSTRY_APC3_SYSTEM_3
+config INDUSTRY_APC3_SYSTEM_3_PRIORITY
+	int "SYSTEM_3 task priority"
+	default 97
+
+config INDUSTRY_APC3_SYSTEM_3_STACKSIZE
+	int "SYSTEM_3 stack size"
+	default DEFAULT_TASK_STACKSIZE
+endif # INDUSTRY_APC3_SYSTEM_3
+
+
+
+config INDUSTRY_APC3_SYSTEM_4
+	bool "Enable SYSTEM_4 of APC3 firmware"
+	default n
+	---help---
+		Enable or disable the Arlan PonCat3 SYSTEM_4:
+		Debug Console through NSH.
+
+if INDUSTRY_APC3_SYSTEM_4
+config INDUSTRY_APC3_SYSTEM_4_PRIORITY
+	int "SYSTEM_4 task priority"
+	default 98
+
+config INDUSTRY_APC3_SYSTEM_4_STACKSIZE
+	int "SYSTEM_4 stack size"
+	default DEFAULT_TASK_STACKSIZE
+endif # INDUSTRY_APC3_SYSTEM_4
+
+
+endmenu # Arlan-PonCat3 systems
+
+
+
+
+endif # INDUSTRY_APC3

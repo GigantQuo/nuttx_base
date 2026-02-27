@@ -1,0 +1,29 @@
+#
+# For a description of the syntax of this configuration file,
+# see the file kconfig-language.txt in the NuttX tools repository.
+#
+
+config EXAMPLES_SWITCHCORER
+	tristate "\"SwitchcoreR\" example"
+	default n
+	---help---
+		Enable the \"switchcoreR, World!\" example
+
+if EXAMPLES_SWITCHCORER
+
+config EXAMPLES_SWITCHCORER_PROGNAME
+	string "Program name"
+	default "switchcoreR"
+	---help---
+		This is the name of the program that will be used when the NSH ELF
+		program is installed.
+
+config EXAMPLES_SWITCHCORER_PRIORITY
+	int "switchcoreR task priority"
+	default 100
+
+config EXAMPLES_SWITCHCORER_STACKSIZE
+	int "switchcoreR stack size"
+	default DEFAULT_TASK_STACKSIZE
+
+endif

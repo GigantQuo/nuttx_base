@@ -1,0 +1,73 @@
+FROM debian:trixie-slim
+
+# Upgrading system
+RUN apt update -y && apt upgrade -y
+
+# Installing all required tools from "Get started paragraph"
+RUN apt install -y \
+    bison \
+    flex \
+    gettext \
+    texinfo \
+    libncurses5-dev \
+    libncursesw5-dev \
+    xxd \
+    git \
+    gperf \
+    automake \
+    libtool \
+    pkg-config \
+    build-essential \
+    gperf \
+    genromfs \
+    libgmp-dev \
+    libmpc-dev \
+    libmpfr-dev \
+    libisl-dev \
+    binutils-dev \
+    libelf-dev \
+    libexpat1-dev \
+    gcc-multilib \
+    g++-multilib \
+    picocom \
+    u-boot-tools \
+    util-linux \
+    kconfig-frontends \
+    python3-kconfiglib \
+    lsd
+
+# Installing all required compilers
+RUN apt install -y \
+    gcc-arm-none-eabi \
+    gcc-riscv64-unknown-elf \
+    gcc-avr \
+    gcc-xtensa-lx106 \
+    binutils-arm-none-eabi \
+    binutils-riscv64-unknown-elf \
+    binutils-avr
+
+# Adding developer user
+RUN useradd -m -s /bin/bash developer && \
+    mkdir -p /workspace && \
+    chown developer:developer /workspace
+
+USER developer
+WORKDIR /workspace
+
+# Setting environment variables
+ENV PATH="/tools/bin:${PATH}"
+ENV SHELL=/bin/bash
+
+# Done
+CMD ["sleep", "infinity"]
+
+
+
+
+
+
+
+
+
+
+

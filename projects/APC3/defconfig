@@ -1,0 +1,15 @@
+make distclean
+make configure cfg=apc3:nsh
+make nconfig
+LOAD(F7) <- ../projects/APC3/ATSAMD20_APC3_CFG
+
+Выбор плат:
+  Board Selection -> Arlan-PonCat3 board options ->
+  Arlan-PonCat3 board variants -> (default Arlan-48GE-S)
+Опции приложения:
+  Application Configuration -> Industrial Applications ->
+  APC3 firmwares
+
+SAVE(F6) -> .config
+EXIT(F9)
+make build

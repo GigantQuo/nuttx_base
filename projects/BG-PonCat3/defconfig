@@ -1,0 +1,6 @@
+make distclean
+make configure cfg=switchcore:usbnsh7
+LOAD(F7) <- ../projects/BG-PonCat3/ATSAMD21_BG_CFG
+SAVE(F6) -> .config
+EXIT(F9)
+make build
