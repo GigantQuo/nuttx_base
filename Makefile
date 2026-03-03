@@ -101,16 +101,3 @@ distclean:
 logs:
 	@echo "📝 Логи всех контейнеров:"
 	docker compose logs -f
-
-
-# Commands to show microcontrollers datashits
-.PHONY: samd21-rm
-samd21-rm:
-	@okular /home/Workspace/Library/Base_Datasheets/Integrated\ \circuits/Microcontrollers/ARM/Cortex-M0+/Microchip/ATSAMD21/ATSAMD21\ \RM.pdf
-
-
-# Commands to show schematics of the board with target devices
-# Switchcore private
-.PHONY: switchchore
-switchcore:
-	@okular /mnt/Server/untr-private/Якунин/BG/Documents/Э3/Коммутирующая.pdf
