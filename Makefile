@@ -1,4 +1,4 @@
-PWD		= ./eng/nxd
+PWD		= ./
 usb		= 0
 acm		= 0
 
