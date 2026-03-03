@@ -56,10 +56,6 @@
 /cscope.*
 /defconfig
 /Make.defs
-/nuttx32
-/nuttx-*
-**/nuttx.*
-/nuttx_user*
 /staging
 **/tags
 /TAGS

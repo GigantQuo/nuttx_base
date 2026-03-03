@@ -1,0 +1,4 @@
+git add ./
+git commit -m "Comment"
+git push github --all
+git push -u origin master
