@@ -100,8 +100,7 @@ int SYS2_indication(const char mask,
   {
     gpioerr("ERROR: SYSTEM_2: Failed to read /dev/gpout1: %d\n\r",
             ret);
-    close(fd);
-    SYS2_leave_critical_section();
+    CLOSE(fd);
     return ret;
   }
 
@@ -119,8 +118,7 @@ int SYS2_indication(const char mask,
   {
     gpioerr("ERROR: SYSTEM_2: Failed to write /dev/gpout1: %d\n\r",
             ret);
-    close(fd);
-    SYS2_leave_critical_section();
+    CLOSE(fd);
     return ret;
   }
 
@@ -130,8 +128,7 @@ int SYS2_indication(const char mask,
   {
     gpioerr("ERROR: SYSTEM_2: Failed to read /dev/gpout1: %d\n\r",
             ret);
-    close(fd);
-    SYS2_leave_critical_section();
+    CLOSE(fd);
     return ret;
   }
 
@@ -140,8 +137,7 @@ int SYS2_indication(const char mask,
     ret = -EPWROUT;
   }
 
-  close(fd);
-  SYS2_leave_critical_section();
+  CLOSE(fd);
   return ret;
 }
 

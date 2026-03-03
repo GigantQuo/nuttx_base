@@ -136,13 +136,23 @@ int SYS2_check_block_1(void)
 
 
 
+  /* Enter the task critical section */
+  ret = SYS2_enter_critical_section();
+  if (ret < 0)
+  {
+    _err("ERROR: SYSTEM_2: Failed to enter critical section: %d\n\r",
+    ret);
+    return ret;
+  }
+
   /* Open the ADC driver */
   fd = open(devpath, O_RDONLY);
   if (fd < 0)
   {
     ret = fd;
-    aerr("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
          ret);
+    SYS2_leave_critical_section();
     return ret;
   }
 
@@ -151,16 +161,12 @@ int SYS2_check_block_1(void)
   {
     /* Check this voltages */
     ret = read(fd, &voltages, sizeof(voltages));
-    if (ret < 0)
+    if (ret <= 0)
     {
-      aerr("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
+      _err("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
            ret);
-      close(fd);
-      return ret;
-    }
-    else if (ret == 0)
-    {
       pwout_cntr++;
+      break;
     }
 
     /* First conversion in the group is false - ignore it */
@@ -352,7 +358,7 @@ int SYS2_check_block_1(void)
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
   }
 
-  close(fd);
+  CLOSE(fd);
 
   /* If global power out counter > 5 PWOUT iteration
    * then turn OFF Block,
@@ -484,13 +490,23 @@ int SYS2_check_block_2(void)
 
 
 
+  /* Enter the task critical section */
+  ret = SYS2_enter_critical_section();
+  if (ret < 0)
+  {
+    _err("ERROR: SYSTEM_2: Failed to enter critical section: %d\n\r",
+    ret);
+    return ret;
+  }
+
   /* Open the ADC driver */
   fd = open(devpath, O_RDONLY);
   if (fd < 0)
   {
     ret = fd;
-    aerr("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
          ret);
+    SYS2_leave_critical_section();
     return ret;
   }
 
@@ -499,16 +515,12 @@ int SYS2_check_block_2(void)
   {
     /* Check this voltages */
     ret = read(fd, &voltages, sizeof(voltages));
-    if (ret < 0)
+    if (ret <= 0)
     {
-      aerr("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
+      _err("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
            ret);
-      close(fd);
-      return ret;
-    }
-    else if (ret == 0)
-    {
       pwout_cntr++;
+      break;
     }
 
     /* First conversion in the group is false - ignore it */
@@ -578,8 +590,8 @@ int SYS2_check_block_2(void)
        * 3.3V    : 32768
        * 3.3V+x% : 36480 (3.67V)
        */
-      if ((voltages.am_data < 20000) ||
-          (voltages.am_data > 36480))
+      if ((voltages.am_data < 31129) ||
+          (voltages.am_data > 34407))
       {
         printf("3.3V_0 voltage out of range (2.66V-3.67V): %d mV\n\r",
                (int)ADC2MVOLT(voltages.am_data) * 2);
@@ -606,8 +618,8 @@ int SYS2_check_block_2(void)
        * 3.3V    : 32768
        * 3.3V+x% : 36480 (3.67V)
        */
-      if ((voltages.am_data < 20000) ||
-          (voltages.am_data > 36480))
+      if ((voltages.am_data < 31129) ||
+          (voltages.am_data > 34407))
       {
         printf("3.3V_1 voltage out of range (2.66V-3.67V): %d mV\n\r",
                (int)ADC2MVOLT(voltages.am_data) * 2);
@@ -622,7 +634,7 @@ int SYS2_check_block_2(void)
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS */
   }
 
-  close(fd);
+  CLOSE(fd);
 
   /* If global power out counter > 5 PWOUT iteration
    * then turn OFF Block,
@@ -696,13 +708,23 @@ int SYS2_check_block_3(void)
 
 
 
+  /* Enter the task critical section */
+  ret = SYS2_enter_critical_section();
+  if (ret < 0)
+  {
+    _err("ERROR: SYSTEM_2: Failed to enter critical section: %d\n\r",
+         ret);
+    return ret;
+  }
+
   /* Open the ADC driver */
   fd = open(devpath, O_RDONLY);
   if (fd < 0)
   {
     ret = fd;
-    aerr("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
          ret);
+    SYS2_leave_critical_section();
     return ret;
   }
 
@@ -710,16 +732,12 @@ int SYS2_check_block_3(void)
   {
     /* Check this voltages */
     ret = read(fd, &voltages, sizeof(voltages));
-    if (ret < 0)
+    if (ret <= 0)
     {
-      aerr("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
+      _err("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
            ret);
-      close(fd);
-      return ret;
-    }
-    else if (ret == 0)
-    {
       pwout_cntr++;
+      break;
     }
 
     /* First conversion in the group is false - ignore it */
@@ -750,7 +768,7 @@ int SYS2_check_block_3(void)
     }
   }
 
-  close(fd);
+  CLOSE(fd);
 
 
   if (pwout_cntr == 0)

@@ -79,12 +79,22 @@ static int SYS2_check_PU(char *bad_pu)
   ret = OK;
   devpath = "/dev/gpinp0";
 
+  /* Enter the task critical section */
+  ret = SYS2_enter_critical_section();
+  if (ret < 0)
+  {
+    _err("ERROR: SYSTEM_2: Failed to enter critical section: %d\n\r",
+         ret);
+    return ret;
+  }
+
   fd = open(devpath, O_RDONLY);
   if (fd < 0)
   {
     ret = fd;
     gpioerr("ERROR: SYSTEM_2: Failed to open /dev/gpinp0: %d\n\r",
             ret);
+    SYS2_leave_critical_section();
     return ret;
   }
 
@@ -93,7 +103,7 @@ static int SYS2_check_PU(char *bad_pu)
   {
     gpioerr("ERROR: SYSTEM_2: Failed to read /dev/gpinp0: %d\n\r",
             ret);
-    close(fd);
+    CLOSE(fd);
     return ret;
   }
 
@@ -103,7 +113,7 @@ static int SYS2_check_PU(char *bad_pu)
 
   ret = 0;
 
-  close(fd);
+  CLOSE(fd);
 
 #if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
     defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)

@@ -60,6 +60,8 @@ volatile bool g_acc_enabled = 0x0;
  * Private Data
  ****************************************************************************/
 
+static volatile char g_acc_pwout_cntr = 0x0;
+
 /****************************************************************************
  * Private Functions
  ****************************************************************************/
@@ -88,21 +90,31 @@ static inline int SYS2_check_ACC(void)
   ret = OK;
   devpath = "/dev/gpinp0";
 
+  /* Enter the task critical section */
+  ret = SYS2_enter_critical_section();
+  if (ret < 0)
+  {
+    _err("ERROR: SYSTEM_2: Failed to enter critical section: %d\n\r",
+         ret);
+    return ret;
+  }
+
   fd = open(devpath, O_RDONLY);
   if (fd < 0)
   {
     ret = fd;
-    gpioerr("ERROR: SYSTEM_2: Failed to open /dev/gpinp0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to open /dev/gpinp0: %d\n\r",
             ret);
+    SYS2_leave_critical_section();
     return ret;
   }
 
   ret = read(fd, raw, sizeof(raw));
   if (ret < 0)
   {
-    gpioerr("ERROR: SYSTEM_2: Failed to read /dev/gpinp0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to read /dev/gpinp0: %d\n\r",
             ret);
-    close(fd);
+    CLOSE(fd);
     return ret;
   }
 
@@ -112,7 +124,7 @@ static inline int SYS2_check_ACC(void)
 
   ret = 1;
 
-  close(fd);
+  CLOSE(fd);
 
   if (!(AC_OK_BAT(raw))) /* AC_OK_BAT */
   {
@@ -122,13 +134,12 @@ static inline int SYS2_check_ACC(void)
     }
     ret = 0;
   }
-  else if (BAT_LOW(raw)) /* BAT_LOW */
+  else if (!(BAT_LOW(raw))) /* BAT_LOW */
   {
     if (prev_raw != VALID_BYTE(raw))
     {
       _info("ACC battary low!\n\r");
     }
-    ret = 0;
   }
 
   prev_raw = VALID_BYTE(raw);
@@ -153,12 +164,23 @@ static inline int SYS2_check_VBAT(void)
 {
   struct adc_msg_s voltage;
   char *devpath;
+  char pwout_cntr;
   int ret;
   int fd;
   uint8_t i;
 
   ret = 0;
+  pwout_cntr = 0;
   devpath = "/dev/adc0";
+
+  /* Enter the task critical section */
+  ret = SYS2_enter_critical_section();
+  if (ret < 0)
+  {
+    _err("ERROR: SYSTEM_2: Failed to enter critical section: %d\n\r",
+         ret);
+    return ret;
+  }
 
   /* We need to check the 12.0V
    * and turn in on if it is OK.
@@ -168,8 +190,9 @@ static inline int SYS2_check_VBAT(void)
   if (fd < 0)
   {
     ret = fd;
-    aerr("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
          ret);
+    SYS2_leave_critical_section();
     return ret;
   }
 
@@ -177,17 +200,12 @@ static inline int SYS2_check_VBAT(void)
   {
     /* Check this voltage */
     ret = read(fd, &voltage, sizeof(voltage));
-    if (ret < 0)
+    if (ret <= 0)
     {
-      aerr("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
+      _err("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
            ret);
-      close(fd);
-      return ret;
-    }
-    else if (ret == 0)
-    {
-      close(fd);
-      return ret;
+      pwout_cntr++;
+      break;
     }
 
     /* First conversion in the group is false - ignore it */
@@ -210,16 +228,13 @@ static inline int SYS2_check_VBAT(void)
          * additional inaccurate voltage drop
          * across diodes.
          */
-        if ((voltage.am_data < 18100) ||
-            (voltage.am_data > 21700))
+        if ((voltage.am_data < 15500) ||
+            (voltage.am_data > 24500))
         {
-          printf("12.0V (ena) voltage out of range (10.8V-13.2V): %d mV\n\r",
+          printf("12.0V (ena) voltage out of range (9.6V-14.2V): %d mV\n\r",
                  (int)ADC2MVOLT(voltage.am_data + 600) * 11);
 
-          ret = 0;
-
-          close(fd);
-          return ret;
+          pwout_cntr++;
         }
       }
       else /* If ACC disabled then apply more strict range */
@@ -238,16 +253,13 @@ static inline int SYS2_check_VBAT(void)
         * additional inaccurate voltage drop
         * across diodes.
         */
-        if ((voltage.am_data < 18880) ||
-            (voltage.am_data > 22250))
+        if ((voltage.am_data < 17000) ||
+            (voltage.am_data > 24000))
         {
-          printf("12.0V (dis) voltage out of range (11.4V-12.6V): %d mV\n\r",
+          printf("12.0V (dis) voltage out of range (9.6V-14.2V): %d mV\n\r",
                 (int)ADC2MVOLT(voltage.am_data + 600) * 11);
 
-          ret = 0;
-
-          close(fd);
-          return ret;
+          pwout_cntr++;
         }
       }
 
@@ -257,7 +269,26 @@ static inline int SYS2_check_VBAT(void)
     }
   }
 
-  close(fd);
+  CLOSE(fd);
+
+  /* If global power out counter > 2 PWOUT iteration
+   * then turn OFF Block,
+   * If there is no PWOUT states, then decrement global counter
+   */
+  if (pwout_cntr == 0)
+  {
+    g_acc_pwout_cntr = (g_acc_pwout_cntr > 0) ? (g_acc_pwout_cntr - 1) : 0;
+  }
+  else
+  {
+    g_acc_pwout_cntr++;
+  }
+
+  if (g_acc_pwout_cntr >= 2)
+  {
+    ret = 0;
+    return ret;
+  }
 
 #if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
     defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)

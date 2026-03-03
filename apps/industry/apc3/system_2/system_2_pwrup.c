@@ -113,8 +113,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 3.3V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -129,8 +128,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 1.8V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -145,8 +143,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 1.5V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -161,8 +158,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 1.02V_0: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -179,8 +175,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 1.02V_1: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -198,8 +193,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 0.9V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -220,8 +214,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 1.0_0V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -236,8 +229,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 3.3_0V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -254,8 +246,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 1.0_1V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -270,8 +261,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 3.3_1V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -291,8 +281,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 5.0V: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -312,8 +301,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP PU 1: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -328,8 +316,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP PU 2: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -344,8 +331,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
     {
       _err("ERROR: SYSTEM_2: Failed perform hardware UP 12V BAT: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -391,8 +377,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
       {
         _err("ERROR: SYSTEM_2: Failed perform hardware unreset SW0: %d\n\r",
              ret);
-        close(fd);
-        SYS2_leave_critical_section();
+        CLOSE(fd);
         return ret;
       }
     }
@@ -410,8 +395,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
       {
         _err("ERROR: SYSTEM_2: Failed perform hardware unreset SW1: %d\n\r",
              ret);
-        close(fd);
-        SYS2_leave_critical_section();
+        CLOSE(fd);
         return ret;
       }
     }
@@ -430,8 +414,7 @@ int SYS2_pwrup(const uint32_t rvoltage)
       {
         _err("ERROR: SYSTEM_2: Failed perform hardware unreset TCA: %d\n\r",
              ret);
-        close(fd);
-        SYS2_leave_critical_section();
+        CLOSE(fd);
         return ret;
       }
     }

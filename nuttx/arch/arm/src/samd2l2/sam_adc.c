@@ -138,6 +138,7 @@ static int sam_adc_interrupt(int irq, void *context, void *arg)
                                  result);
 
   putreg8(ADC_INT_RESRDY, SAM_ADC_INTFLAG);
+  sam_adc_synchronization();
 
   /* If all channels were read, restart to the first channel */
 
@@ -149,7 +150,6 @@ static int sam_adc_interrupt(int irq, void *context, void *arg)
   putreg32(priv->channels[priv->cur_channel] |
            priv->neg | BOARD_ADC_GAIN,
            SAM_ADC_INPUTCTRL);
-
   sam_adc_synchronization();
 
   // putreg8(ADC_SWTRIG_START, SAM_ADC_SWTRIG);

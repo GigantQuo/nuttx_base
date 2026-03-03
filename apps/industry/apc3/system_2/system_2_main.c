@@ -852,7 +852,7 @@ int system_2_start(int argc, char* argv[])
              * POWER OK - ON,
              * ALARM    - no change
              */
-            indication_mask |= SYSTEM_2_POWER_OK;
+            indication_mask |= SYSTEM_2_ALL_IND;
             indication |= SYSTEM_2_POWER_OK;
 
             /* Power:

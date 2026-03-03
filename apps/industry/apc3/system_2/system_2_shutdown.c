@@ -123,8 +123,7 @@ int SYS2_shutdown(const uint32_t block)
       ret = fd_rst;
       gpioerr("ERROR: SYSTEM_2: Failed to open /dev/gpout1: %d\n\r",
               ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
 
@@ -137,8 +136,7 @@ int SYS2_shutdown(const uint32_t block)
         _err("ERROR: SYSTEM_2: Failed to perform hardware reset: %d\n\r",
              ret);
         close(fd_rst);
-        close(fd);
-        SYS2_leave_critical_section();
+        CLOSE(fd);
         return ret;
       }
     }
@@ -157,8 +155,7 @@ int SYS2_shutdown(const uint32_t block)
       {
         _err("ERROR: SYSTEM_2: Failed to turn OFF block 1: %d\n\r",
             ret);
-        close(fd);
-        SYS2_leave_critical_section();
+        CLOSE(fd);
         return ret;
       }
     }
@@ -182,8 +179,7 @@ int SYS2_shutdown(const uint32_t block)
       {
         _err("ERROR: SYSTEM_2: Failed to turn OFF block 2: %d\n\r",
              ret);
-        close(fd);
-        SYS2_leave_critical_section();
+        CLOSE(fd);
         return ret;
       }
     }
@@ -202,8 +198,7 @@ int SYS2_shutdown(const uint32_t block)
     {
       _err("ERROR: SYSTEM_2: Failed to turn OFF block 3: %d\n\r",
             ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -221,8 +216,7 @@ int SYS2_shutdown(const uint32_t block)
     {
       _err("ERROR: SYSTEM_2: Failed to turn OFF PU 1: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -238,8 +232,7 @@ int SYS2_shutdown(const uint32_t block)
     {
       _err("ERROR: SYSTEM_2: Failed to turn OFF PU 2: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
@@ -255,15 +248,13 @@ int SYS2_shutdown(const uint32_t block)
     {
       _err("ERROR: SYSTEM_2: Failed to turn OFF 12V BAT: %d\n\r",
            ret);
-      close(fd);
-      SYS2_leave_critical_section();
+      CLOSE(fd);
       return ret;
     }
   }
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
 
-  close(fd);
-  SYS2_leave_critical_section();
+  CLOSE(fd);
 
   return ret;
 }

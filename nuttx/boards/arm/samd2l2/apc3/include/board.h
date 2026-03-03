@@ -499,7 +499,7 @@
 
 #define BOARD_ADC_AVERAGING             ADC_AVGCTRL_SAMPLENUM_1024
 
-#define BOARD_ADC_PRESCALER             ADC_CTRLB_PRESCALER_DIV16
+#define BOARD_ADC_PRESCALER             ADC_CTRLB_PRESCALER_DIV32
 
 
 /* GPIO definitions *********************************************************/

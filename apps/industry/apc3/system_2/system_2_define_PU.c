@@ -75,6 +75,15 @@ static inline int SYS2_check_ACC_PRSNT(void)
   ret = 0;
   devpath = "/dev/adc0";
 
+  /* Enter the task critical section */
+  ret = SYS2_enter_critical_section();
+  if (ret < 0)
+  {
+    _err("ERROR: SYSTEM_2: Failed to enter critical section: %d\n\r",
+         ret);
+    return ret;
+  }
+
   /* We need to check the 12.0V
    * VBAT+, if it is more than 5V
    * then ACC BAT present.
@@ -84,8 +93,9 @@ static inline int SYS2_check_ACC_PRSNT(void)
   if (fd < 0)
   {
     ret = fd;
-    aerr("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to open /dev/adc0: %d\n\r",
          ret);
+    SYS2_leave_critical_section();
     return ret;
   }
 
@@ -95,13 +105,14 @@ static inline int SYS2_check_ACC_PRSNT(void)
     ret = read(fd, &voltage, sizeof(voltage));
     if (ret < 0)
     {
-      aerr("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
+      _err("ERROR: SYSTEM_2: Failed to read /dev/adc0: %d\n\r",
            ret);
+      CLOSE(fd);
       return ret;
     }
     else if (ret == 0)
     {
-      close(fd);
+      CLOSE(fd);
       return ret;
     }
 
@@ -123,12 +134,12 @@ static inline int SYS2_check_ACC_PRSNT(void)
       g_adc0_data_buffer[BOARD_ADC_VBAT_CH_OFFSET] =
         (uint8_t)((ADC2MVOLT(voltage.am_data + 600) * 11) / 100);
 
-      close(fd);
+      CLOSE(fd);
       return ret;
     }
   }
 
-  close(fd);
+  CLOSE(fd);
 
   ret = 0;
 
@@ -166,12 +177,23 @@ int SYS2_define_PU(char* script)
   devpath = "/dev/gpinp0";
   pus = 0;
 
+  /* Enter the task critical section */
+  ret = SYS2_enter_critical_section();
+  if (ret < 0)
+  {
+    _err("ERROR: SYSTEM_2: Failed to enter critical section: %d\n\r",
+         ret);
+    return ret;
+  }
+
+  /* Open the driver that drives the inputs */
   fd = open(devpath, O_RDONLY);
   if (fd < 0)
   {
     ret = fd;
-    gpioerr("ERROR: SYSTEM_2: Failed to open /dev/gpinp0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to open /dev/gpinp0: %d\n\r",
             ret);
+    SYS2_leave_critical_section();
     return ret;
   }
 
@@ -179,9 +201,9 @@ int SYS2_define_PU(char* script)
   ret = read(fd, raw, sizeof(raw));
   if (ret < 0)
   {
-    gpioerr("ERROR: SYSTEM_2: Failed to read /dev/gpinp0: %d\n\r",
+    _err("ERROR: SYSTEM_2: Failed to read /dev/gpinp0: %d\n\r",
             ret);
-    close(fd);
+    CLOSE(fd);
     return ret;
   }
 
@@ -189,7 +211,7 @@ int SYS2_define_PU(char* script)
   g_gpinp0_data_buffer[0] = MNPWRST_CNV(raw);
   g_gpinp0_data_buffer[1] = BSPWRST_CNV(raw);
 
-  close(fd);
+  CLOSE(fd);
 
   /* Check the ACC by scaning its voltage */
   ret = SYS2_check_ACC_PRSNT();

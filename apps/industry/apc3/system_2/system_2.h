@@ -98,6 +98,9 @@
 /* ADC units to voltage conversion definition */
 #define ADC2MVOLT(adc)         ((((adc) * 1650) / 65536) * 2)
 
+/* The close-file procedure definition */
+#define CLOSE(fd)              close(fd); SYS2_leave_critical_section()
+
 /* Returned values of retfl in system_2_start function
  * from main switch-case branch:
  * retfl < 0          - software / hardware error

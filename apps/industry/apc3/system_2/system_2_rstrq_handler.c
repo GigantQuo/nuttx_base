@@ -61,7 +61,9 @@
 void SYS2_rstrq_handler(int signo,
                         siginfo_t *info,
                         void *context)
-{}
+{
+  /* Is not performed yet */
+}
 
 
 #endif /* CONFIG_INDUSTRY_APC3_SYSTEM_2 */
