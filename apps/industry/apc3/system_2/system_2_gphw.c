@@ -104,23 +104,23 @@ int SYS2_gpout_hw(const int fd,
      */
 
     /* bitval_s reinitialization */
-    // upbit.val = &check;
+    upbit.val = &check;
 
     /* Wait until the value has been installed */
-    // usleep(5);
+    usleep(5);
 
-    // ret = ioctl(fd, GPOUT_BIT_READ, &upbit);
-    // if (ret < 0)
-    //{
-    //   gpioerr("ERROR: SYSTEM_2: Failed to ioctl /dev/gpout: %d\n\r",
-    //           ret);
-    //   return ret;
-    // }
+    ret = ioctl(fd, GPOUT_BIT_READ, &upbit);
+    if (ret < 0)
+    {
+      gpioerr("ERROR: SYSTEM_2: Failed to ioctl /dev/gpout: %d\n\r",
+              ret);
+      return ret;
+    }
 
-    // if (check != val)
-    //{
-    //   ret = -EPWROUT;
-    // }
+    if (check != val)
+    {
+      ret = -EPWROUT;
+    }
 
     return ret;
 }

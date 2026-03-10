@@ -826,9 +826,6 @@ distclean: clean subdir_distclean
 ifeq ($(CONFIG_BUILD_2PASS),y)
 	$(Q) $(MAKE) -C $(CONFIG_PASS1_BUILDIR) distclean
 endif
-ifeq ($(CONFIG_ARCH_HAVE_BOOTLOADER),y)
-	$(Q) $(MAKE) clean_bootloader
-endif
 	$(Q) $(MAKE) clean_context
 	$(Q) $(MAKE) -C tools -f Makefile.host clean
 	$(call DELFILE, Make.defs)
