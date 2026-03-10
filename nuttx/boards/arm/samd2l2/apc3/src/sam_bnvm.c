@@ -1,5 +1,5 @@
 /****************************************************************************
- * boards/arm/samd2l2/apc3/src/sam_i2c_bslave.c
+ * boards/arm/samd2l2/apc3/src/sam_bnvm.c
  ****************************************************************************/
 
 /****************************************************************************
@@ -12,68 +12,50 @@
 #include <arch/board/board.h>
 #include <nuttx/board.h>
 
-#include <nuttx/i2c/i2c_slave.h>
-
-#include "sam_i2c_slave.h"
+#include "sam_nvmctrl.h"
 
 #include "apc3.h"
 
-#ifdef CONFIG_I2C_SLAVE_DRIVER
 
+#if defined(CONFIG_SAMD2L2_NVMCTRL)
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
 
 /****************************************************************************
- * Private Functions
+ * Private Types
  ****************************************************************************/
 
 /****************************************************************************
- * Public Data
+ * Private Function Prototypes
  ****************************************************************************/
 
 /****************************************************************************
- * Public Functions
+ * Private Data
  ****************************************************************************/
 
 /****************************************************************************
- * Name: sam_i2c_slave_register
+ * Name: sam_nvm
  *
  * Description:
- *   Register one I2C drivers for the I2C tool.
+ *   Initialize the NVM controller.
  *
  ****************************************************************************/
 
-struct i2c_slave_s* sam_i2c_slave_register(	int bus,
-                                            int addr)
+void sam_nvm(void)
 {
-  struct i2c_slave_s* i2c;
   int ret;
 
-  i2cinfo("\nI2C%d-slave Initializing!\n", bus);
+  ret = OK;
 
-  i2c = sam_i2cbus_slave_initialize(bus);
-  if (i2c == NULL)
+  ret = sam_nvmctrl_initialize();
+  if (ret < 0)
   {
-    i2cerr("ERROR: BRINGUP: Failed to get I2C%d interface\n", bus);
-    return i2c;
+    ferr("ERROR: BRINGUP: Failed to initialize NVM controller: %d\n\r",
+         ret);
   }
-  else
-  {
-    ret = i2c_slave_register(	i2c,
-                              bus,
-                              addr,
-                              SAM_NBITS);
-    if (ret < 0)
-    {
-      i2cerr("ERROR: BRINGUP: Failed to register I2C%d driver: %d\n", bus, ret);
-      sam_i2cbus_slave_uninitialize(i2c);
-      return NULL;
-    }
-
-    i2cinfo("I2C%d-slave Initializing is done!\n", bus);
-  }
-  return i2c;
 }
 
-#endif
+
+
+#endif /* CONFIG_SAMD2L2_NVMCTRL */

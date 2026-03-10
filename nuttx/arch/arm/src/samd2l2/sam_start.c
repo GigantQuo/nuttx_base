@@ -138,26 +138,16 @@ void __start(void)
 #endif
   showprogress('B');
 
-  /* For the case of the separate user-/kernel-space build, perform whatever
-   * platform specific initialization of the user memory is required.
-   * Normally this just means initializing the user space .data and .bss
-   * segments.
-   */
-
-#ifdef CONFIG_BUILD_PROTECTED
-  sam_userspace();
-  showprogress('C');
-#endif
-
   /* Initialize onboard resources */
 
   sam_boardinitialize();
-  showprogress('D');
+  showprogress('C');
 
   /* Then start NuttX */
 
   showprogress('\r');
   showprogress('\n');
+
   nx_start();
 
   /* Shouldn't get here */

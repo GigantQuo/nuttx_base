@@ -37,6 +37,7 @@
 #include <arch/board/board.h>
 
 #include "nvic.h"
+#include "ram_vectors.h"
 #include "arm_internal.h"
 #include "sam_irq.h"
 #include "sam_eic.h"
@@ -149,6 +150,13 @@ void up_irqinitialize(void)
       regaddr = ARMV6M_NVIC_IPR(i);
       putreg32(DEFPRIORITY32, regaddr);
     }
+
+#ifdef CONFIG_ARCH_RAMVECTORS
+  /* If CONFIG_ARCH_RAMVECTORS is defined, then we are using a RAM-based
+   * vector table that requires special initialization.
+   */
+  arm_ramvec_initialize();
+#endif
 
   /* Attach the SVCall and Hard Fault exception handlers.  The SVCall
    * exception is used for performing context switches; The Hard Fault

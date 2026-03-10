@@ -184,6 +184,18 @@ void sam_gpint_register(unsigned int minor);
 void sam_wdt_register(void);
 #endif /* CONFIG_WATCHDOG */
 
+/****************************************************************************
+ * Name: sam_nvm
+ *
+ * Description:
+ *   Initialize the NVM controller.
+ *
+ ****************************************************************************/
+
+#if defined(CONFIG_SAMD2L2_NVMCTRL)
+void sam_nvm(void);
+#endif /* CONFIG_SAMD2L2_NVMCTRL */
+
 
 #undef EXTERN
 #ifdef __cplusplus

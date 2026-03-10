@@ -1,31 +1,15 @@
 /****************************************************************************
- * boards/arm/samd2l2/apc3/src/sam_i2c_bslave.c
+ * arch/arm/src/samd2l2/bootloader/bootloader.h
  ****************************************************************************/
 
 /****************************************************************************
  * Included Files
  ****************************************************************************/
 
-#include <debug.h>
-
 #include <nuttx/config.h>
-#include <arch/board/board.h>
-#include <nuttx/board.h>
-
-#include <nuttx/i2c/i2c_slave.h>
-
-#include "sam_i2c_slave.h"
-
-#include "apc3.h"
-
-#ifdef CONFIG_I2C_SLAVE_DRIVER
 
 /****************************************************************************
  * Pre-processor Definitions
- ****************************************************************************/
-
-/****************************************************************************
- * Private Functions
  ****************************************************************************/
 
 /****************************************************************************
@@ -33,47 +17,37 @@
  ****************************************************************************/
 
 /****************************************************************************
+ * Private Functions
+ ****************************************************************************/
+
+/****************************************************************************
+ * Name: showprogress
+ *
+ * Description:
+ *   Print a character on the UART to show boot status.
+ *
+ ****************************************************************************/
+
+/****************************************************************************
  * Public Functions
  ****************************************************************************/
 
 /****************************************************************************
- * Name: sam_i2c_slave_register
+ * Name: __start
  *
  * Description:
- *   Register one I2C drivers for the I2C tool.
+ *   This is the reset entry point.
  *
  ****************************************************************************/
 
-struct i2c_slave_s* sam_i2c_slave_register(	int bus,
-                                            int addr)
-{
-  struct i2c_slave_s* i2c;
-  int ret;
+void __start(void) __attribute__((section(".bootloader_text")));
 
-  i2cinfo("\nI2C%d-slave Initializing!\n", bus);
+/****************************************************************************
+ * Name: exception_common
+ *
+ * Description:
+ *   Defautl dummy handler for unexpected interrupts.
+ *
+ ****************************************************************************/
 
-  i2c = sam_i2cbus_slave_initialize(bus);
-  if (i2c == NULL)
-  {
-    i2cerr("ERROR: BRINGUP: Failed to get I2C%d interface\n", bus);
-    return i2c;
-  }
-  else
-  {
-    ret = i2c_slave_register(	i2c,
-                              bus,
-                              addr,
-                              SAM_NBITS);
-    if (ret < 0)
-    {
-      i2cerr("ERROR: BRINGUP: Failed to register I2C%d driver: %d\n", bus, ret);
-      sam_i2cbus_slave_uninitialize(i2c);
-      return NULL;
-    }
-
-    i2cinfo("I2C%d-slave Initializing is done!\n", bus);
-  }
-  return i2c;
-}
-
-#endif
+void exception_common(void);

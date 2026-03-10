@@ -1,41 +1,16 @@
-/****************************************************************************
- * boards/arm/samd2l2/apc3/scripts/flash.ld
- ****************************************************************************/
-
-/* The ATSAMD20J18A has 256KB of FLASH beginning at address 0x0000:0000 and
- * 32KB of SRAM beginning at address 0x2000:0000
- */
-
-#include <nuttx/config.h>
-
-#ifdef CONFIG_ARCH_ARM_BOOTLOADER
-    #define SAMD2L2_BOOTLOADER_ORIGIN     0x00000000
-    #define SAMD2L2_BOOTLOADER_SIZE       8K
-    #define SAMD2L2_FLASH_ORIGIN          0x00002000
-    #define SAMD2L2_FLASH_SIZE            248K
-#else
-    #define SAMD2L2_FLASH_ORIGIN          0x00000000
-    #define SAMD2L2_FLASH_SIZE            256K
-#endif
-
 MEMORY
 {
-  flash      (rx)   : ORIGIN = SAMD2L2_FLASH_ORIGIN, LENGTH = SAMD2L2_FLASH_SIZE
-  sram       (rwx)  : ORIGIN = 0x20000000, LENGTH = 32K
+  flash (rx) : ORIGIN = 0x00000000, LENGTH = 8K
+  sram (rwx) : ORIGIN = 0x20000000, LENGTH = 32K
 }
-
-
 OUTPUT_ARCH(arm)
 EXTERN(_vectors)
 ENTRY(_stext)
-
 SECTIONS
 {
     .text : {
         _stext = ABSOLUTE(.);
-#ifndef CONFIG_ARCH_ARM_BOOTLOADER
         *(.vectors)
-#endif
         *(.text .text.*)
         *(.fixup)
         *(.gnu.warning)
@@ -48,30 +23,20 @@ SECTIONS
         *(.gnu.linkonce.r.*)
         _etext = ABSOLUTE(.);
     } > flash
-
     .init_section : {
         _sinit = ABSOLUTE(.);
         KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*)))
         KEEP(*(.init_array EXCLUDE_FILE(*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o) .ctors))
         _einit = ABSOLUTE(.);
     } > flash
-
     .ARM.extab : {
         *(.ARM.extab*)
     } >flash
-
     .ARM.exidx : {
         __exidx_start = ABSOLUTE(.);
         *(.ARM.exidx*)
         __exidx_end = ABSOLUTE(.);
     } >flash
-
-    /* The RAM vector table (if present) should lie at the beginning of SRAM */
-
-    .ram_vectors : {
-        *(.ram_vectors)
-    } > sram AT > flash
-
     .data : {
         _sdata = ABSOLUTE(.);
         *(.data .data.*)
@@ -80,17 +45,13 @@ SECTIONS
         . = ALIGN(4);
         _edata = ABSOLUTE(.);
     } > sram AT > flash
-
     _eronly = LOADADDR(.data);
-
     .ramfunc ALIGN(4): {
         _sramfuncs = ABSOLUTE(.);
-        *(.ramfunc  .ramfunc.*)
+        *(.ramfunc .ramfunc.*)
         _eramfuncs = ABSOLUTE(.);
     } > sram AT > flash
-
     _framfuncs = LOADADDR(.ramfunc);
-
     .bss : {
         _sbss = ABSOLUTE(.);
         *(.bss .bss.*)
@@ -99,8 +60,6 @@ SECTIONS
         . = ALIGN(4);
         _ebss = ABSOLUTE(.);
     } > sram
-
-    /* Stabs debugging sections. */
     .stab 0 : { *(.stab) }
     .stabstr 0 : { *(.stabstr) }
     .stab.excl 0 : { *(.stab.excl) }

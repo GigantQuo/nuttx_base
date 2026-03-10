@@ -106,16 +106,16 @@ void sam_gpint_register(unsigned int minor)
                                  irqs[i]);
     if (gpint == NULL)
     {
-      _err("ERROR: Failed to initialize gpint%d\n\r",
-           i);
+      gpioerr("ERROR: BRINGUP: Failed to initialize gpint%d\n\r",
+              i);
       return;
     }
 
     ret = gpint_register(gpint, minor++);
     if (ret < 0)
     {
-      _err("ERROR: Failed to register GPINT%d driver: %d\n",
-           minor, (unsigned int)ret);
+      gpioerr("ERROR: BRINGUP: Failed to register GPINT%d driver: %d\n",
+              minor, (unsigned int)ret);
 
       sam_gpint_uninitialize(gpint);
       gpint = NULL;

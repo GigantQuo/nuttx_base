@@ -159,6 +159,13 @@ endif
 BIN = nuttx$(EXEEXT)
 
 all: $(BIN)
+	$(Q) mkdir -p ../build
+	$(Q) mv $(TOPDIR)$(DELIM)nuttx.bin ../build/
+ifeq ($(CONFIG_ARCH_HAVE_BOOTLOADER),y)
+	$(Q) $(MAKE) -C $(ARCH_SRC) bootloader
+	$(Q) mv $(TOPDIR)$(DELIM)bootloader.bin ../build/
+endif
+
 .PHONY: context clean_context config oldconfig menuconfig nconfig qconfig gconfig export subdir_clean clean subdir_distclean distclean apps_clean apps_distclean
 .PHONY: pass1 pass1dep
 .PHONY: pass2 pass2dep
@@ -861,3 +868,4 @@ apps_distclean:
 ifneq ($(APPDIR),)
 	$(Q) $(MAKE) -C $(APPDIR) distclean
 endif
+
