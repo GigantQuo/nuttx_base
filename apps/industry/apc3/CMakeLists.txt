@@ -6,8 +6,6 @@ if(CONFIG_INDUSTRY_APC3)
   nuttx_add_application(
     NAME
     ${CONFIG_INDUSTRY_APC3_PROGNAME}
-    SRCS
-    switchcore_main.c
     STACKSIZE
     ${CONFIG_INDUSTRY_APC3_STACKSIZE}
     PRIORITY

@@ -15,6 +15,10 @@
  * Pre-processor Definitions
  ****************************************************************************/
 
+#define NINP_DRVRS 1
+#define NOUT_DRVRS 4
+#define NINT_DRVRS 2
+
 /* Clocking *****************************************************************/
 
 /* Overview

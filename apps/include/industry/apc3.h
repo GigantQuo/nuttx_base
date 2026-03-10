@@ -12,10 +12,26 @@
 #include <nuttx/config.h>
 #include <nuttx/compiler.h>
 
+#include <arch/board/board.h>
+
 #if defined(CONFIG_INDUSTRY_APC3)
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
+
+/* Projects metadata */
+#define PRJ_VERSION                ("0.0")
+#define PRJ_AUTHOR                 ("AYAKUNIN")
+
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S)
+  #define PRJ_MODEL                ("ARLAN_ATSAMD20_48GES_0")
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
+  #define PRJ_MODEL                ("ARLAN_ATSAMD20_48GEFS_0")
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+  #define PRJ_MODEL                ("ARLAN_ATSAMD20_24GES_0")
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
+  #define PRJ_MODEL                ("ARLAN_ATSAMD20_24GEFS_0")
+#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_ */
 
 #define APC3_NSYSTEMS               5
 

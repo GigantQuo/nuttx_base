@@ -215,11 +215,10 @@ int SYS2_define_PU(char* script)
 
   /* Check the ACC by scaning its voltage */
   ret = SYS2_check_ACC_PRSNT();
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to check ACC present: %d\n\r",
-         ret);
-    return ret;
+  if (ret < 0) {
+      _err("ERROR: SYSTEM_2: Failed to check ACC present: %d\n\r",
+          ret);
+      return ret;
   }
   /* Aply mask and perform the comparing */
   if (ret == 1)

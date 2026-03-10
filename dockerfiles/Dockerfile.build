@@ -34,6 +34,7 @@ RUN apt install -y \
     util-linux \
     kconfig-frontends \
     python3-kconfiglib \
+    bear \
     lsd
 
 # Installing all required compilers

@@ -7,14 +7,14 @@
  ****************************************************************************/
 
 #include <debug.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <pthread.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include <sys/ioctl.h>
 
@@ -29,68 +29,62 @@
  * Pre-processor Definitions
  ****************************************************************************/
 
-#define SYSTEM_2_PANIC_CHECK(ret)   \
-                            if ((ret) == -EPWROUT) \
-                                 SYS2_out_of_control(); \
-                            else SYS2_under_control()
+#define SYSTEM_2_PANIC_CHECK(ret) \
+    if ((ret) == -EPWROUT)        \
+        SYS2_out_of_control();    \
+    else                          \
+        SYS2_under_control()
 
 /****************************************************************************
  * Private Functions Prototypes
  ****************************************************************************/
 
-static inline int SYS2_request_init(struct sigaction *act_rstrq,
-                                    sig_ctx_s2_t *sig_ctx_rstrq);
+static inline int SYS2_request_init(struct sigaction* act_rstrq,
+    sig_ctx_s2_t* sig_ctx_rstrq);
 
 /****************************************************************************
  * Public Data
  ****************************************************************************/
 
 /* gpout0 driver */
-const uint8_t block_1_pull[SYSTEM_2_B1_NOUTS] =
-{
-    BOARD_GPOUT0_3V3
-  , BOARD_GPOUT0_1V8
-  , BOARD_GPOUT0_1V5
-  , BOARD_GPOUT0_1V02_0
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S)
-  , BOARD_GPOUT0_1V02_1
+const uint8_t block_1_pull[SYSTEM_2_B1_NOUTS] = {
+    BOARD_GPOUT0_3V3, BOARD_GPOUT0_1V8, BOARD_GPOUT0_1V5, BOARD_GPOUT0_1V02_0
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S)
+    ,
+    BOARD_GPOUT0_1V02_1
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_-S */
 
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-  , BOARD_GPOUT0_0V9
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+    ,
+    BOARD_GPOUT0_0V9
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
 };
 
 #if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
-const uint8_t block_2_pull[SYSTEM_2_B2_NOUTS] =
-{
-  BOARD_GPOUT0_3V3_0,
-  BOARD_GPOUT0_3V3_1,
-  BOARD_GPOUT0_1V0_0,
-  BOARD_GPOUT0_1V0_1
+const uint8_t block_2_pull[SYSTEM_2_B2_NOUTS] = {
+    BOARD_GPOUT0_3V3_0,
+    BOARD_GPOUT0_3V3_1,
+    BOARD_GPOUT0_1V0_0,
+    BOARD_GPOUT0_1V0_1
 };
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-const uint8_t block_2_pull[SYSTEM_2_B2_NOUTS] =
-{
-  BOARD_GPOUT0_3V3_0,
-  BOARD_GPOUT0_1V0_0
+const uint8_t block_2_pull[SYSTEM_2_B2_NOUTS] = {
+    BOARD_GPOUT0_3V3_0,
+    BOARD_GPOUT0_1V0_0
 };
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_ */
 
 /* gpout1 driver */
-const uint8_t reset_pull[SYSTEM_2_RST_NOUTS] =
-{
+const uint8_t reset_pull[SYSTEM_2_RST_NOUTS] = {
     BOARD_GPOUT1_SW0
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S)
-  , BOARD_GPOUT1_SW1
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S)
+    ,
+    BOARD_GPOUT1_SW1
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_-S */
 
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-  , BOARD_GPOUT1_TCA
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+    ,
+    BOARD_GPOUT1_TCA
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
 };
 
@@ -118,109 +112,101 @@ sigset_t g_wait_mask;
  *
  ****************************************************************************/
 
-static inline int SYS2_request_init(struct sigaction *act_rstrq,
-                                    sig_ctx_s2_t *sig_ctx_rstrq)
+static inline int SYS2_request_init(struct sigaction* act_rstrq,
+    sig_ctx_s2_t* sig_ctx_rstrq)
 {
-  int ret;
+    int ret;
 
-  ret = OK;
+    ret = OK;
 
-  /* sigaction struct initialization */
-  memset(act_rstrq, 0x0, sizeof(struct sigaction));
+    /* sigaction struct initialization */
+    memset(act_rstrq, 0x0, sizeof(struct sigaction));
 
-  /* Initialize the signal reset request handler */
-  act_rstrq->sa_sigaction = SYS2_rstrq_handler;
-  act_rstrq->sa_flags = SA_SIGINFO;
-  act_rstrq->sa_user = (void *)sig_ctx_rstrq;
+    /* Initialize the signal reset request handler */
+    act_rstrq->sa_sigaction = SYS2_rstrq_handler;
+    act_rstrq->sa_flags = SA_SIGINFO;
+    act_rstrq->sa_user = (void*)sig_ctx_rstrq;
 
-  /* Initalize the masks */
-  ret = sigemptyset(&act_rstrq->sa_mask);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to empty sigset (act_rstrq): %d\n\r",
-         ret);
+    /* Initalize the masks */
+    ret = sigemptyset(&act_rstrq->sa_mask);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to empty sigset (act_rstrq): %d\n\r",
+            ret);
+        return ret;
+    }
+    ret = sigemptyset(&g_wait_mask);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to empty sigset (g_wait_mask): %d\n\r",
+            ret);
+        return ret;
+    }
+
+    /* Block all signals */
+    ret = sigfillset(&act_rstrq->sa_mask);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to fill sigset (act_rstrq): %d\n\r",
+            ret);
+        return ret;
+    }
+    ret = sigfillset(&g_wait_mask);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to fill sigset (g_wait_mask): %d\n\r",
+            ret);
+        return ret;
+    }
+
+    /* Only for sigprocmask */
+
+    /* Unblock SIGTTOU signal */
+    ret = sigdelset(&g_wait_mask,
+        SIGTTOU);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to delete signal (SIGTTOU): %d\n\r",
+            ret);
+        return ret;
+    }
+    /* Unblock SIGTTIN signal */
+    ret = sigdelset(&g_wait_mask,
+        SIGTTIN);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to delete signal (SIGTTIN): %d\n\r",
+            ret);
+        return ret;
+    }
+
+    /* Now the g_wait_mask contents all signals
+     * except SIGTTOU (reset request)
+     * and SIGTTIN (info request)
+     */
+
+    /* Apply the mask on this task */
+    ret = sigprocmask(SIG_SETMASK,
+        &g_wait_mask,
+        NULL);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to apply sigset (g_wait_mask): %d\n\r",
+            ret);
+        return ret;
+    }
+
+    /* Attach the signal handler to reset request */
+    ret = sigaction(SIGTTOU,
+        act_rstrq,
+        NULL);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to set up sigaction (SIGTTOU): %d\n\r",
+            ret);
+        return ret;
+    }
+
+    /* If there is SIGTTOU or SIGTTIN
+     * signals on this task then
+     * the corresponding handler will be
+     * executed by interrupting the main
+     * task
+     */
+
     return ret;
-  }
-  ret = sigemptyset(&g_wait_mask);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to empty sigset (g_wait_mask): %d\n\r",
-         ret);
-    return ret;
-  }
-
-  /* Block all signals */
-  ret = sigfillset(&act_rstrq->sa_mask);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to fill sigset (act_rstrq): %d\n\r",
-         ret);
-    return ret;
-  }
-  ret = sigfillset(&g_wait_mask);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to fill sigset (g_wait_mask): %d\n\r",
-         ret);
-    return ret;
-  }
-
-  /* Only for sigprocmask */
-
-  /* Unblock SIGTTOU signal */
-  ret = sigdelset(&g_wait_mask,
-                  SIGTTOU);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to delete signal (SIGTTOU): %d\n\r",
-         ret);
-    return ret;
-  }
-  /* Unblock SIGTTIN signal */
-  ret = sigdelset(&g_wait_mask,
-                  SIGTTIN);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to delete signal (SIGTTIN): %d\n\r",
-         ret);
-    return ret;
-  }
-
-  /* Now the g_wait_mask contents all signals
-   * except SIGTTOU (reset request)
-   * and SIGTTIN (info request)
-   */
-
-  /* Apply the mask on this task */
-  ret = sigprocmask(SIG_SETMASK,
-                    &g_wait_mask,
-                    NULL);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to apply sigset (g_wait_mask): %d\n\r",
-         ret);
-    return ret;
-  }
-
-  /* Attach the signal handler to reset request */
-  ret = sigaction(SIGTTOU,
-                  act_rstrq,
-                  NULL);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to set up sigaction (SIGTTOU): %d\n\r",
-         ret);
-    return ret;
-  }
-
-  /* If there is SIGTTOU or SIGTTIN
-   * signals on this task then
-   * the corresponding handler will be
-   * executed by interrupting the main
-   * task
-   */
-
-  return ret;
 }
 
 /****************************************************************************
@@ -245,491 +231,610 @@ static inline int SYS2_request_init(struct sigaction *act_rstrq,
 
 int system_2_start(int argc, char* argv[])
 {
-  int ret;
-  char script;
-  char prev_scr;
-  char indication;
-  char indication_mask;
-  uint16_t power;
-  char *blocks_message;
-  int retfl;
-  char prev_retfl;
+    int ret;
+    char script;
+    char prev_scr;
+    char indication;
+    char indication_mask;
+    uint16_t power;
+    char* blocks_message;
+    int retfl;
+    char prev_retfl;
 
-  struct sigaction act_rstrq;
-  sig_ctx_s2_t sig_ctx_rstrq;
+    struct sigaction act_rstrq;
+    sig_ctx_s2_t sig_ctx_rstrq;
 
-  _info("SYSTEM_2 Started successfully!\n\r");
+    _info("SYSTEM_2 Started successfully!\n\r");
 
-  ret = OK;
+    ret = OK;
 
-  /* Needed for NO SPAM */
-  script      = SYSTEM_2_NO_PU;
-  prev_scr    = 0x10;
-  retfl       = 0x00;
-  prev_retfl  = 0x10;
+    /* Needed for NO SPAM */
+    script = SYSTEM_2_NO_PU;
+    prev_scr = 0x10;
+    retfl = 0x00;
+    prev_retfl = 0x10;
 
-  /* Initialization of global ALARM stare */
-  alarm_st = SYSTEM_2_NORMAL_STATE;
+    /* Initialization of global ALARM stare */
+    alarm_st = SYSTEM_2_NORMAL_STATE;
 
-  /* Initialization of alarm thread attributes and id */
-  pthread_attr_init(&alrm_thr_attr);
-  alrm_thr_id = 0;
+    /* Initialization of alarm thread attributes and id */
+    pthread_attr_init(&alrm_thr_attr);
+    alrm_thr_id = 0;
 
-  /* Reset request handler initialization */
-  ret = SYS2_request_init(&act_rstrq,
-                          &sig_ctx_rstrq);
-  if (ret < 0)
-  {
-    _err("ERROR: SYSTEM_2: Failed to initialize reset request: %d\n\r",
-         ret);
-  }
-
-  while (1)
-  {
-     /* Reset the indication and power every interation */
-    indication_mask = 0x0;
-    indication = 0x0;
-    power = 0x0;
-
-    /* First we need to define
-     * the current Power Unit in the device.
-     * It can be:
-     * UPxx01R or BCF-150S12  - mains power,
-     * BCF-150                - accumulator power.
-     *
-     * Then script can be:
-     * -2 - No any PU in the device,
-     * -1 - Both PU are present in the device,
-     * 0  - UPxx01R or BCF-150S12 PU is present,
-     * 1  - BCF-159 PU is present.
-     */
-
-    ret = SYS2_define_PU(&script);
-    if (ret < 0)
-    {
-      _err("ERROR: SYSTEM_2: Failed to define PU: %d\n\r",
-           ret);
+    /* Reset request handler initialization */
+    ret = SYS2_request_init(&act_rstrq,
+        &sig_ctx_rstrq);
+    if (ret < 0) {
+        _err("ERROR: SYSTEM_2: Failed to initialize reset request: %d\n\r",
+            ret);
     }
 
-    /* Logic to execute suitable script depending on
-     * script value.
-     * Indication initial values:
-     * POWER OK - OFF,
-     * ALARM    - OFF
-     * Power initial values:
-     * PU 1     - OFF,
-     * PU 2     - OFF,
-     * Block 1  - OFF,
-     * Block 2  - OFF,
-     * Block 3  - OFF
-     */
-    switch (script)
-    {
-      /* No valid PU in the device - call PANIC */
-      case (SYSTEM_2_NO_PU):
-        if (script != prev_scr)
-        {
-           printf("\n\rPANIC!: Illegal situation\n\r");
-           printf("There is no Power Unit in the device!\n\r");
-        }
-        /* Indication:
-         * POWER OK - OFF,
-         * ALARM    - ON
-         */
-        indication_mask |= SYSTEM_2_ALL_IND;
-        indication |= SYSTEM_2_ALARM;
+    while (1) {
+        /* Reset the indication and power every interation */
+        indication_mask = 0x0;
+        indication = 0x0;
+        power = 0x0;
 
-        /* Power:
+        /* First we need to define
+         * the current Power Unit in the device.
+         * It can be:
+         * UPxx01R or BCF-150S12  - mains power,
+         * BCF-150                - accumulator power.
+         *
+         * Then script can be:
+         * -2 - No any PU in the device,
+         * -1 - Both PU are present in the device,
+         * 0  - UPxx01R or BCF-150S12 PU is present,
+         * 1  - BCF-159 PU is present.
+         */
+
+        ret = SYS2_define_PU(&script);
+        if (ret < 0) {
+            _err("ERROR: SYSTEM_2: Failed to define PU: %d\n\r",
+                ret);
+        }
+
+        /* Logic to execute suitable script depending on
+         * script value.
+         * Indication initial values:
+         * POWER OK - OFF,
+         * ALARM    - OFF
+         * Power initial values:
          * PU 1     - OFF,
          * PU 2     - OFF,
-         * ACC      - OFF,
          * Block 1  - OFF,
          * Block 2  - OFF,
          * Block 3  - OFF
          */
-        power |=   SYSTEM_2_ALL_BLOCKS
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                 | SYSTEM_2_PU_1
-                 | SYSTEM_2_PU_2
-                 | SYSTEM_2_ACC
+        switch (script) {
+        /* No valid PU in the device - call PANIC */
+        case (SYSTEM_2_NO_PU):
+            if (script != prev_scr) {
+                _info("\n\rPANIC!: Illegal situation\n\r");
+                _info("There is no Power Unit in the device!\n\r");
+            }
+            /* Indication:
+             * POWER OK - OFF,
+             * ALARM    - ON
+             */
+            indication_mask |= SYSTEM_2_ALL_IND;
+            indication |= SYSTEM_2_ALARM;
+
+            /* Power:
+             * PU 1     - OFF,
+             * PU 2     - OFF,
+             * ACC      - OFF,
+             * Block 1  - OFF,
+             * Block 2  - OFF,
+             * Block 3  - OFF
+             */
+            power |= SYSTEM_2_ALL_BLOCKS
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                | SYSTEM_2_PU_1
+                | SYSTEM_2_PU_2
+                | SYSTEM_2_ACC
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                 ;
-        break;
+                ;
+            break;
 
-      /* There is both PU in the device - call PANIC */
-      case (SYSTEM_2_BOTH_PU):
-        if (script != prev_scr)
-        {
-          printf("\n\rPANIC!: Illegal situation\n\r");
-          printf("There is both Power Unit in the device!\n\r");
-        }
-        /* Indication:
-         * POWER OK - OFF,
-         * ALARM    - ON
-         */
-        indication_mask |= SYSTEM_2_ALL_IND;
-        indication |= SYSTEM_2_ALARM;
+        /* There is both PU in the device - call PANIC */
+        case (SYSTEM_2_BOTH_PU):
+            if (script != prev_scr) {
+                _info("\n\rPANIC!: Illegal situation\n\r");
+                _info("There is both Power Unit in the device!\n\r");
+            }
+            /* Indication:
+             * POWER OK - OFF,
+             * ALARM    - ON
+             */
+            indication_mask |= SYSTEM_2_ALL_IND;
+            indication |= SYSTEM_2_ALARM;
 
-        /* Power:
-         * PU 1     - OFF,
-         * PU 2     - OFF,
-         * ACC      - OFF,
-         * Block 1  - OFF,
-         * Block 2  - OFF,
-         * Block 3  - OFF
-         */
-        power |=   SYSTEM_2_ALL_BLOCKS
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                 | SYSTEM_2_PU_1
-                 | SYSTEM_2_PU_2
-                 | SYSTEM_2_ACC
+            /* Power:
+             * PU 1     - OFF,
+             * PU 2     - OFF,
+             * ACC      - OFF,
+             * Block 1  - OFF,
+             * Block 2  - OFF,
+             * Block 3  - OFF
+             */
+            power |= SYSTEM_2_ALL_BLOCKS
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                | SYSTEM_2_PU_1
+                | SYSTEM_2_PU_2
+                | SYSTEM_2_ACC
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                 ;
-        break;
+                ;
+            break;
 
-      /* Only Mains PU in the device - call MAIN script */
-      case (SYSTEM_2_MAIN_PU):
-        char *pu_message;
-        char bad_pu;
-        char prev_bad_pu;
+        /* Only Mains PU in the device - call MAIN script */
+        case (SYSTEM_2_MAIN_PU):
+            char* pu_message;
+            char bad_pu;
+            char prev_bad_pu;
 
-        blocks_message = "\n\rSYSTEM ERROR\r\n";
-        pu_message = "\n\rAll PU is broken!\n\r";
+            blocks_message = "\n\rSYSTEM ERROR\r\n";
+            pu_message = "\n\rAll PU is broken!\n\r";
 
-        if (script != prev_scr)
-        {
-          printf("\n\rMains power script running!\n\r");
+            if (script != prev_scr) {
+                _info("\n\rMains power script running!\n\r");
 
-          /* Reset to new message */
-          retfl       = 0x00;
-          prev_retfl  = 0x10;
+                /* Reset to new message */
+                retfl = 0x00;
+                prev_retfl = 0x10;
 
-          bad_pu      = 0x03;
-          prev_bad_pu = 0x10;
-        }
+                bad_pu = 0x03;
+                prev_bad_pu = 0x10;
+            }
 
-        /* Execute the Mains Power algorithm */
-        retfl = SYS2_main_script(&bad_pu);
-        if (retfl < 0)
-        {
-          _err("ERROR: SYSTEM_2: mains power script failed\n\r");
-          SYSTEM_2_PANIC_CHECK(retfl);
-          continue;
-        }
+            /* Execute the Mains Power algorithm */
+            retfl = SYS2_main_script(&bad_pu);
+            if (retfl < 0) {
+                _err("ERROR: SYSTEM_2: mains power script failed\n\r");
+                SYSTEM_2_PANIC_CHECK(retfl);
+                continue;
+            }
 
-        /* Handle the result */
-        switch (retfl)
-        {
-          /* All blocks and PU is BAD */
-          case (0):
+            /* Handle the result */
+            switch (retfl) {
+            /* All blocks and PU is BAD */
+            case (0):
             case_1: /* Enter point */
 
-            blocks_message = "\n\rFAILED:\n\rPU - BAD\n\rB1 - BAD\
+                blocks_message = "\n\rFAILED:\n\rPU - BAD\n\rB1 - BAD\
 \n\rB2 - BAD\n\rB3 - BAD\n\n\r";
 
-            /* Indication:
-             * POWER OK - OFF,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALL_IND;
-            indication |= SYSTEM_2_ALARM;
+                /* Indication:
+                 * POWER OK - OFF,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_ALARM;
 
-            /* Power:
-             * PU 1     - OFF,
-             * PU 2     - OFF,
-             * ACC      - OFF,
-             * Block 1  - OFF,
-             * Block 2  - OFF,
-             * Block 3  - OFF
-             */
-            power |=   SYSTEM_2_ALL_BLOCKS
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                 | SYSTEM_2_PU_1
-                 | SYSTEM_2_PU_2
-                 | SYSTEM_2_ACC
+                /* Power:
+                 * PU 1     - OFF,
+                 * PU 2     - OFF,
+                 * ACC      - OFF,
+                 * Block 1  - OFF,
+                 * Block 2  - OFF,
+                 * Block 3  - OFF
+                 */
+                power |= SYSTEM_2_ALL_BLOCKS
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                    | SYSTEM_2_PU_1
+                    | SYSTEM_2_PU_2
+                    | SYSTEM_2_ACC
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                 ;
-            break;
+                    ;
+                break;
 
-          /* All blocks is BAD, but PU is OK */
-          case (1):
-            blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - BAD\
+            /* All blocks is BAD, but PU is OK */
+            case (1):
+                blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - BAD\
 \n\rB2 - BAD\n\rB3 - BAD\n\n\r";
 
-            /* Indication:
-             * POWER OK - OFF,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALL_IND;
-            indication |= SYSTEM_2_ALARM;
+                /* Indication:
+                 * POWER OK - OFF,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_ALARM;
 
-            /* Power:
-             * PU 1     - no change,
-             * PU 2     - no change,
-             * ACC      - OFF,
-             * Block 1  - OFF,
-             * Block 2  - OFF,
-             * Block 3  - OFF
-             */
-            power |=   SYSTEM_2_ALL_BLOCKS
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                     | SYSTEM_2_ACC
+                /* Power:
+                 * PU 1     - no change,
+                 * PU 2     - no change,
+                 * ACC      - OFF,
+                 * Block 1  - OFF,
+                 * Block 2  - OFF,
+                 * Block 3  - OFF
+                 */
+                power |= SYSTEM_2_ALL_BLOCKS
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                    | SYSTEM_2_ACC
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                     ;
-            break;
+                    ;
+                break;
 
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-          /* Blocks 2-3 is BAD, but PU and Block 1 is OK */
-          case (2):
-            blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - OK\
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
+            /* Blocks 2-3 is BAD, but PU and Block 1 is OK */
+            case (2):
+                blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - OK\
 \n\rB2 - BAD\n\rB3 - BAD\n\n\r";
 
-            /* Indication:
-             * POWER OK - OFF,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALL_IND;
-            indication |= SYSTEM_2_ALARM;
+                /* Indication:
+                 * POWER OK - OFF,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_ALARM;
 
-            /* Power:
-             * PU 1     - no change,
-             * PU 2     - no change,
-             * ACC      - OFF,
-             * Block 1  - OFF,
-             * Block 2  - OFF,
-             * Block 3  - OFF
-             */
-            power |= SYSTEM_2_ALL_BLOCKS;
-            break;
+                /* Power:
+                 * PU 1     - no change,
+                 * PU 2     - no change,
+                 * ACC      - OFF,
+                 * Block 1  - OFF,
+                 * Block 2  - OFF,
+                 * Block 3  - OFF
+                 */
+                power |= SYSTEM_2_ALL_BLOCKS;
+                break;
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_FS */
 
-          /* Block 3 is BAD, but PU and Blocks 1-2 is OK */
-          case (3):
-            blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - OK\
+            /* Block 3 is BAD, but PU and Blocks 1-2 is OK */
+            case (3):
+                blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - OK\
 \n\rB2 - OK\n\rB3 - BAD\n\n\r";
 
-            /* Indication:
-             * POWER OK - OFF,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALL_IND;
-            indication |= SYSTEM_2_ALARM;
+                /* Indication:
+                 * POWER OK - OFF,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_ALARM;
 
-            /* Power:
-             * PU 1     - no change,
-             * PU 2     - no change,
-             * ACC      - OFF,
-             * Block 1  - no change,
-             * Block 2  - no change,
-             * Block 3  - OFF
-             */
-            power |=   SYSTEM_2_BLOCK_3
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                     | SYSTEM_2_ACC
+                /* Power:
+                 * PU 1     - no change,
+                 * PU 2     - no change,
+                 * ACC      - OFF,
+                 * Block 1  - no change,
+                 * Block 2  - no change,
+                 * Block 3  - OFF
+                 */
+                power |= SYSTEM_2_BLOCK_3
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                    | SYSTEM_2_ACC
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                     ;
-            break;
+                    ;
+                break;
 
-          /* All blocks and PU is OK */
-          case (4):
-            blocks_message = "\n\rPASSED:\n\rPU - OK\n\rB1 - OK\
+            /* All blocks and PU is OK */
+            case (4):
+                blocks_message = "\n\rPASSED:\n\rPU - OK\n\rB1 - OK\
 \n\rB2 - OK\n\rB3 - OK\n\n\r";
 
-            /* Indication:
-             * POWER OK - ON,
-             * ALARM    - no change
-             */
-            indication_mask |= SYSTEM_2_POWER_OK;
-            indication |= SYSTEM_2_POWER_OK;
+                /* Indication:
+                 * POWER OK - ON,
+                 * ALARM    - no change
+                 */
+                indication_mask |= SYSTEM_2_POWER_OK;
+                indication |= SYSTEM_2_POWER_OK;
 
-            /* Power:
-             * PU 1     - no change,
-             * PU 2     - no change,
-             * ACC      - OFF,
-             * Block 1  - no change,
-             * Block 2  - no change,
-             * Block 3  - no change
-             */
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-            power |= SYSTEM_2_ACC;
+                /* Power:
+                 * PU 1     - no change,
+                 * PU 2     - no change,
+                 * ACC      - OFF,
+                 * Block 1  - no change,
+                 * Block 2  - no change,
+                 * Block 3  - no change
+                 */
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                power |= SYSTEM_2_ACC;
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-            break;
+                break;
 
-          /* Unknown code */
-          default:
-            /* Like case (1) */
-            goto case_1;
-        }
+            /* Unknown code */
+            default:
+                /* Like case (1) */
+                goto case_1;
+            }
 
-        /* Handle the PU state */
-        switch (bad_pu & 0x3)
-        {
-          case (0):
-            /* "\n\r All PU is broken!\n\r" */
+            /* Handle the PU state */
+            switch (bad_pu & 0x3) {
+            case (0):
+                /* "\n\r All PU is broken!\n\r" */
 
-            /* Indication:
-             * No change, becouse
-             * of it is already set properly
-             * by previous switch-case
-             */
-            break;
+                /* Indication:
+                 * No change, becouse
+                 * of it is already set properly
+                 * by previous switch-case
+                 */
+                break;
 
-
-          case (1):
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-            pu_message = "\n\rRight PU is broken!\n\r";
-#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) ||\
-      defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-            pu_message = "\n\rLeft PU is broken!\n\r";
+            case (1):
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                pu_message = "\n\rRight PU is broken!\n\r";
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
+                pu_message = "\n\rLeft PU is broken!\n\r";
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_ */
 
-            /* Power:
-             * PU 1     - no change,
-             * PU 2     - OFF,
-             * ACC      - no change,
-             * Block 1  - no change,
-             * Block 2  - no change,
-             * Block 3  - no change
-             */
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-            power |= SYSTEM_2_PU_2;
+                /* Power:
+                 * PU 1     - no change,
+                 * PU 2     - OFF,
+                 * ACC      - no change,
+                 * Block 1  - no change,
+                 * Block 2  - no change,
+                 * Block 3  - no change
+                 */
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                power |= SYSTEM_2_PU_2;
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
 
-            /* Indication:
-             * POWER OK - no change,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALARM;
-            indication |= SYSTEM_2_ALARM;
-            break;
+                /* Indication:
+                 * POWER OK - no change,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALARM;
+                indication |= SYSTEM_2_ALARM;
+                break;
 
-          case (2):
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-            pu_message = "\n\rLeft PU is broken!\n\r";
-#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) ||\
-      defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-            pu_message = "\n\rRight PU is broken!\n\r";
+            case (2):
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                pu_message = "\n\rLeft PU is broken!\n\r";
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
+                pu_message = "\n\rRight PU is broken!\n\r";
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_ */
 
-            /* Wait until the PU 2 voltage become stable */
-            sleep(2);
+                /* Wait until the PU 2 voltage become stable */
+                sleep(2);
 
-            /* Power:
-             * PU 1     - OFF,
-             * PU 2     - no change,
-             * ACC      - no change,
-             * Block 1  - no change,
-             * Block 2  - no change,
-             * Block 3  - no change
-             */
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-            power |= SYSTEM_2_PU_1;
+                /* Power:
+                 * PU 1     - OFF,
+                 * PU 2     - no change,
+                 * ACC      - no change,
+                 * Block 1  - no change,
+                 * Block 2  - no change,
+                 * Block 3  - no change
+                 */
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                power |= SYSTEM_2_PU_1;
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
 
-            /* Indication:
-             * POWER OK - no change,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALARM;
-            indication |= SYSTEM_2_ALARM;
-            break;
+                /* Indication:
+                 * POWER OK - no change,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALARM;
+                indication |= SYSTEM_2_ALARM;
+                break;
 
-          case (3):
-            pu_message = "\n\rAll PU is functional!\n\r";
+            case (3):
+                pu_message = "\n\rAll PU is functional!\n\r";
 
 /* Not used now: reserved algorithm */
 #if defined(CONFIG_INDUSTRY_APC3_SYSTEM_2_RESERVED)
-            /* Wait until the PU 1 voltage become stable */
-            sleep(2);
+                /* Wait until the PU 1 voltage become stable */
+                sleep(2);
 
-            /* Power:
-             * PU 1     - no change,
-             * PU 2     - OFF,
-             * ACC      - no change,
-             * Block 1  - no change,
-             * Block 2  - no change,
-             * Block 3  - no change
-             */
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-            power |= SYSTEM_2_PU_2;
+                /* Power:
+                 * PU 1     - no change,
+                 * PU 2     - OFF,
+                 * ACC      - no change,
+                 * Block 1  - no change,
+                 * Block 2  - no change,
+                 * Block 3  - no change
+                 */
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                power |= SYSTEM_2_PU_2;
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
 
 #endif /* CONFIG_INDUSTRY_APC3_SYSTEM_2_RESERVED */
 
-            /* Indication:
-             * POWER OK - ON,
-             * ALARM    - OFF
-             */
+                /* Indication:
+                 * POWER OK - ON,
+                 * ALARM    - OFF
+                 */
 
-            if ((power & SYSTEM_2_ALL_BLOCKS) != 0)
-            {
-              indication_mask |= 0x0;
+                if ((power & SYSTEM_2_ALL_BLOCKS) != 0) {
+                    indication_mask |= 0x0;
+                } else {
+                    indication_mask |= SYSTEM_2_ALL_IND;
+                }
+                indication |= SYSTEM_2_POWER_OK;
+
+                break;
+
+            default:
+                /* "\n\r All PU is broken!\n\r" */
+
+                /* Shutdown all power due to unkown code */
+                goto case_0;
             }
-            else
-            {
-              indication_mask |= SYSTEM_2_ALL_IND;
+
+            if (bad_pu != prev_bad_pu) {
+                _info(pu_message);
+                prev_bad_pu = bad_pu;
             }
-            indication |= SYSTEM_2_POWER_OK;
+
+            if (retfl != prev_retfl) {
+                _info(blocks_message);
+                prev_retfl = retfl;
+            }
 
             break;
 
-          default:
-            /* "\n\r All PU is broken!\n\r" */
+        /* Only Accumulator PU in the device - call ACC script */
+        case (SYSTEM_2_ACC_PU):
+            if (script != prev_scr) {
+                _info("\n\rAccumulator power script running!\n\r");
+            }
 
-            /* Shutdown all power due to unkown code */
-            goto case_0;
-        }
+            retfl = SYS2_acc_script();
+            if (ret < 0) {
+                _err("ERROR: SYSTEM_2: accumulator power script failed\n\r");
+                SYSTEM_2_PANIC_CHECK(retfl);
+                continue;
+            }
 
-        if (bad_pu != prev_bad_pu)
-        {
-          printf(pu_message);
-          prev_bad_pu = bad_pu;
-        }
-
-        if (retfl != prev_retfl)
-        {
-          printf(blocks_message);
-          prev_retfl = retfl;
-        }
-
-        break;
-
-      /* Only Accumulator PU in the device - call ACC script */
-      case (SYSTEM_2_ACC_PU):
-        if (script != prev_scr)
-        {
-          printf("\n\rAccumulator power script running!\n\r");
-        }
-
-        retfl = SYS2_acc_script();
-        if (ret < 0)
-        {
-          _err("ERROR: SYSTEM_2: accumulator power script failed\n\r");
-          SYSTEM_2_PANIC_CHECK(retfl);
-          continue;
-        }
-
-        /* Handle the result */
-        switch (retfl)
-        {
-          /* All blocks and ACC is BAD */
-          case (0):
+            /* Handle the result */
+            switch (retfl) {
+            /* All blocks and ACC is BAD */
+            case (0):
             case_0: /* Enter point */
 
-            blocks_message = "\n\rFAILED:\n\rACC - BAD\n\rB1 - BAD\
+                blocks_message = "\n\rFAILED:\n\rACC - BAD\n\rB1 - BAD\
 \n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+
+                /* Indication:
+                 * POWER OK - OFF,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_ALARM;
+
+                /* Power:
+                 * PU 1     - OFF,
+                 * PU 2     - OFF,
+                 * ACC      - OFF,
+                 * Block 1  - OFF,
+                 * Block 2  - OFF,
+                 * Block 3  - OFF
+                 */
+                power |= SYSTEM_2_ALL_BLOCKS
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                    | SYSTEM_2_PU_1
+                    | SYSTEM_2_PU_2
+                    | SYSTEM_2_ACC
+#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
+                    ;
+                break;
+
+            /* All blocks is BAD, but ACC is OK */
+            case (1):
+                blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - BAD\
+\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+
+                /* Indication:
+                 * POWER OK - OFF,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_ALARM;
+
+                /* Power:
+                 * PU 1     - OFF,
+                 * PU 2     - OFF,
+                 * ACC      - no change,
+                 * Block 1  - OFF,
+                 * Block 2  - OFF,
+                 * Block 3  - OFF
+                 */
+                power |= SYSTEM_2_ALL_BLOCKS
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                    | SYSTEM_2_PU_1
+                    | SYSTEM_2_PU_2
+#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
+                    ;
+                break;
+
+                /* Blocks 2-3 is BAD, but ACC and Block 1 is OK */
+            case (2):
+                blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - OK\
+\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+
+                /* Indication:
+                 * POWER OK - OFF,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_ALARM;
+
+                /* Power:
+                 * PU 1     - OFF,
+                 * PU 2     - OFF,
+                 * ACC      - no change,
+                 * Block 1  - OFF,
+                 * Block 2  - OFF,
+                 * Block 3  - OFF
+                 */
+                power |= SYSTEM_2_ALL_BLOCKS
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                    | SYSTEM_2_PU_1
+                    | SYSTEM_2_PU_2
+#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
+                    ;
+                break;
+
+                /* Block 3 is BAD, but ACC and Blocks 1-2 is OK */
+            case (3):
+                blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - OK\
+\n\rB2 - OK\n\rB3 - BAD\n\n\r";
+
+                /* Indication:
+                 * POWER OK - OFF,
+                 * ALARM    - ON
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_ALARM;
+
+                /* Power:
+                 * PU 1     - OFF,
+                 * PU 2     - OFF,
+                 * ACC      - no change,
+                 * Block 1  - no change,
+                 * Block 2  - no change,
+                 * Block 3  - OFF
+                 */
+                power |= SYSTEM_2_BLOCK_3
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                    | SYSTEM_2_PU_1
+                    | SYSTEM_2_PU_2
+#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
+                    ;
+                break;
+
+            /* All blocks and ACC is OK */
+            case (4):
+                blocks_message = "\n\rPASSED:\n\rACC - OK\n\rB1 - OK\
+\n\rB2 - OK\n\rB3 - OK\n\n\r";
+
+                /* Indication:
+                 * POWER OK - ON,
+                 * ALARM    - no change
+                 */
+                indication_mask |= SYSTEM_2_ALL_IND;
+                indication |= SYSTEM_2_POWER_OK;
+
+                /* Power:
+                 * PU 1     - OFF,
+                 * PU 2     - OFF,
+                 * ACC      - no change,
+                 * Block 1  - no change,
+                 * Block 2  - no change,
+                 * Block 3  - no change
+                 */
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                power |= SYSTEM_2_PU_1 | SYSTEM_2_PU_2;
+#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
+                break;
+
+            /* Unknown code */
+            default:
+                /* Like case (0) */
+                goto case_0;
+            }
+
+            if (retfl != prev_retfl) {
+                _info(blocks_message);
+                prev_retfl = retfl;
+            }
+
+            break;
+
+        /* Unknown code due to a hardware error - call PANIC */
+        default:
+            if (script != prev_scr) {
+                _info("\n\rPANIC!: Unknown situation\n\r");
+            }
 
             /* Indication:
              * POWER OK - OFF,
@@ -746,205 +851,41 @@ int system_2_start(int argc, char* argv[])
              * Block 2  - OFF,
              * Block 3  - OFF
              */
-            power |=   SYSTEM_2_ALL_BLOCKS
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                     | SYSTEM_2_PU_1
-                     | SYSTEM_2_PU_2
-                     | SYSTEM_2_ACC
+            power |= SYSTEM_2_ALL_BLOCKS
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+                | SYSTEM_2_PU_1
+                | SYSTEM_2_PU_2
+                | SYSTEM_2_ACC
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                     ;
-          break;
-
-          /* All blocks is BAD, but ACC is OK */
-          case (1):
-            blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - BAD\
-\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
-
-            /* Indication:
-             * POWER OK - OFF,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALL_IND;
-            indication |= SYSTEM_2_ALARM;
-
-            /* Power:
-             * PU 1     - OFF,
-             * PU 2     - OFF,
-             * ACC      - no change,
-             * Block 1  - OFF,
-             * Block 2  - OFF,
-             * Block 3  - OFF
-             */
-            power |=   SYSTEM_2_ALL_BLOCKS
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                     | SYSTEM_2_PU_1
-                     | SYSTEM_2_PU_2
-#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                     ;
+                ;
             break;
-
-            /* Blocks 2-3 is BAD, but ACC and Block 1 is OK */
-          case (2):
-            blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - OK\
-\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
-
-            /* Indication:
-             * POWER OK - OFF,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALL_IND;
-            indication |= SYSTEM_2_ALARM;
-
-            /* Power:
-             * PU 1     - OFF,
-             * PU 2     - OFF,
-             * ACC      - no change,
-             * Block 1  - OFF,
-             * Block 2  - OFF,
-             * Block 3  - OFF
-             */
-            power |=   SYSTEM_2_ALL_BLOCKS
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                     | SYSTEM_2_PU_1
-                     | SYSTEM_2_PU_2
-#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                     ;
-            break;
-
-            /* Block 3 is BAD, but ACC and Blocks 1-2 is OK */
-          case (3):
-            blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - OK\
-\n\rB2 - OK\n\rB3 - BAD\n\n\r";
-
-            /* Indication:
-             * POWER OK - OFF,
-             * ALARM    - ON
-             */
-            indication_mask |= SYSTEM_2_ALL_IND;
-            indication |= SYSTEM_2_ALARM;
-
-            /* Power:
-             * PU 1     - OFF,
-             * PU 2     - OFF,
-             * ACC      - no change,
-             * Block 1  - no change,
-             * Block 2  - no change,
-             * Block 3  - OFF
-             */
-            power |=   SYSTEM_2_BLOCK_3
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                     | SYSTEM_2_PU_1
-                     | SYSTEM_2_PU_2
-#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                     ;
-            break;
-
-          /* All blocks and ACC is OK */
-          case (4):
-            blocks_message = "\n\rPASSED:\n\rACC - OK\n\rB1 - OK\
-\n\rB2 - OK\n\rB3 - OK\n\n\r";
-
-            /* Indication:
-             * POWER OK - ON,
-             * ALARM    - no change
-             */
-            indication_mask |= SYSTEM_2_ALL_IND;
-            indication |= SYSTEM_2_POWER_OK;
-
-            /* Power:
-             * PU 1     - OFF,
-             * PU 2     - OFF,
-             * ACC      - no change,
-             * Block 1  - no change,
-             * Block 2  - no change,
-             * Block 3  - no change
-             */
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-            power |= SYSTEM_2_PU_1    |
-                     SYSTEM_2_PU_2;
-#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-            break;
-
-          /* Unknown code */
-          default:
-            /* Like case (0) */
-            goto case_0;
         }
 
-        if (retfl != prev_retfl)
-        {
-          printf(blocks_message);
-          prev_retfl = retfl;
-        }
+        prev_scr = script;
 
-        break;
+        /* Apply indication changing */
+        ret = SYS2_indication(indication_mask,
+            indication);
+        SYSTEM_2_PANIC_CHECK(ret);
 
-      /* Unknown code due to a hardware error - call PANIC */
-      default:
-        if (script != prev_scr)
-        {
-          printf("\n\rPANIC!: Unknown situation\n\r");
-        }
+        /* Apply power changing */
+        ret = SYS2_shutdown(power);
+        SYSTEM_2_PANIC_CHECK(ret);
 
-        /* Indication:
-         * POWER OK - OFF,
-         * ALARM    - ON
-         */
-        indication_mask |= SYSTEM_2_ALL_IND;
-        indication |= SYSTEM_2_ALARM;
-
-        /* Power:
-         * PU 1     - OFF,
-         * PU 2     - OFF,
-         * ACC      - OFF,
-         * Block 1  - OFF,
-         * Block 2  - OFF,
-         * Block 3  - OFF
-         */
-        power |=   SYSTEM_2_ALL_BLOCKS
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                 | SYSTEM_2_PU_1
-                 | SYSTEM_2_PU_2
-                 | SYSTEM_2_ACC
-#endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_--GE_S */
-                 ;
-        break;
-    }
-
-    prev_scr = script;
-
-    /* Apply indication changing */
-    ret = SYS2_indication(indication_mask,
-                          indication);
-    SYSTEM_2_PANIC_CHECK(ret);
-
-    /* Apply power changing */
-    ret = SYS2_shutdown(power);
-    SYSTEM_2_PANIC_CHECK(ret);
-
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-    if (power & SYSTEM_2_ACC)
-#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || \
-      defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-    if ((power & SYSTEM_2_ALL_BLOCKS) == SYSTEM_2_ALL_BLOCKS)
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+        if (power & SYSTEM_2_ACC)
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
+        if ((power & SYSTEM_2_ALL_BLOCKS) == SYSTEM_2_ALL_BLOCKS)
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_ */
-    {
-      g_acc_enabled = 0x0;
+        {
+            g_acc_enabled = 0x0;
+        }
+
+        /* Check once in 0.2 sec */
+        usleep(400000);
     }
 
-    /* Check once in 0.2 sec */
-    usleep(400000);
-  }
-
-  return ret;
+    return ret;
 }
-
 
 #endif /* CONFIG_INDUSTRY_APC3_SYSTEM_2 */

@@ -7,14 +7,14 @@
  ****************************************************************************/
 
 #include <debug.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <pthread.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include <sys/ioctl.h>
 
@@ -33,9 +33,9 @@
  * Private Functions Prototypes
  ****************************************************************************/
 
-static void SYS2_alrm_cleanup_handler(void *arg);
+static void SYS2_alrm_cleanup_handler(void* arg);
 
-static void *SYS2_alrm_thr(void *arg);
+static void* SYS2_alrm_thr(void* arg);
 
 /****************************************************************************
  * Public Data
@@ -56,25 +56,24 @@ static void *SYS2_alrm_thr(void *arg);
  *
  ****************************************************************************/
 
-static void SYS2_alrm_cleanup_handler(void *arg)
+static void SYS2_alrm_cleanup_handler(void* arg)
 {
-  int fd = (int)(long)arg;
+    int fd = (int)(long)arg;
 
-  if (fd >= 0)
-  {
-    char reset[1];
+    if (fd >= 0) {
+        char reset[1];
 
-    /* Turn off the alarm output */
-    memset(reset, 0x00, sizeof(reset));
+        /* Turn off the alarm output */
+        memset(reset, 0x00, sizeof(reset));
 
-    /* We have no any error check
-     * becouse it is cleanup handler
-     */
-    write(fd, reset, sizeof(reset));
+        /* We have no any error check
+         * becouse it is cleanup handler
+         */
+        write(fd, reset, sizeof(reset));
 
-    /* Close the fd that was opened in the thread function */
-    close(fd);
-  }
+        /* Close the fd that was opened in the thread function */
+        close(fd);
+    }
 }
 
 /****************************************************************************
@@ -92,58 +91,56 @@ static void SYS2_alrm_cleanup_handler(void *arg)
  *
  ****************************************************************************/
 
-static void *SYS2_alrm_thr(void *arg)
+static void* SYS2_alrm_thr(void* arg)
 {
-  struct bitval_s alrm_out;
-  bool blinking;
-  char *devpath;
-  int fd;
+    struct bitval_s alrm_out;
+    bool blinking;
+    char* devpath;
+    int fd;
 
-  /* Set the cancel type - DEFERRED */
-  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-  pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
+    /* Set the cancel type - DEFERRED */
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, NULL);
 
-  devpath = "/dev/gpout1";
+    devpath = "/dev/gpout1";
 
-  /* We have no any error check
-   * becouse it is already
-   * bad script
-   */
-  fd = open(devpath, O_WRONLY);
+    /* We have no any error check
+     * becouse it is already
+     * bad script
+     */
+    fd = open(devpath, O_WRONLY);
 
-  /* Installing the cleanup handler
-   * for close fd and
-   * turn off the alarm output
-   */
-  pthread_cleanup_push(SYS2_alrm_cleanup_handler, (void *)(long)fd);
+    /* Installing the cleanup handler
+     * for close fd and
+     * turn off the alarm output
+     */
+    pthread_cleanup_push(SYS2_alrm_cleanup_handler, (void*)(long)fd);
 
-  alrm_out.bit = 1;
-  alrm_out.val = &blinking;
+    alrm_out.bit = 1;
+    alrm_out.val = &blinking;
 
-  blinking = 0;
+    blinking = 0;
 
-  /* Infinite loop -
-   * the pthread will run
-   * until an external cancellaion
-   * is received
-   */
-  while (1)
-  {
-    blinking = (blinking == 1) ? 0 : 1;
+    /* Infinite loop -
+     * the pthread will run
+     * until an external cancellaion
+     * is received
+     */
+    while (1) {
+        blinking = (blinking == 1) ? 0 : 1;
 
-    ioctl(fd, GPOUT_BIT_WRITE, &alrm_out);
+        ioctl(fd, GPOUT_BIT_WRITE, &alrm_out);
 
-    usleep(250000); /* 250ms */
+        usleep(250000); /* 250ms */
 
-    /* The point of the cancellation */
-    pthread_testcancel();
-  }
+        /* The point of the cancellation */
+        pthread_testcancel();
+    }
 
-  pthread_cleanup_pop(0);
+    pthread_cleanup_pop(0);
 
-  pthread_exit((void *)0);
+    pthread_exit((void*)0);
 }
-
 
 /****************************************************************************
  * Public Functions
@@ -159,28 +156,26 @@ static void *SYS2_alrm_thr(void *arg)
 
 void SYS2_out_of_control(void)
 {
-  int ret;
+    int ret;
 
-  ret = OK;
+    ret = OK;
 
-  printf("\n\rPANIC! PANIC! PANIC!\n\r");
-  printf("!THE POWER IS OUT OF CONTROL!\n\r");
+    printf("\n\rPANIC! PANIC! PANIC!\n\r");
+    printf("!THE POWER IS OUT OF CONTROL!\n\r");
 
-  if (alarm_st == SYSTEM_2_NORMAL_STATE)
-  {
-    ret = pthread_create(&alrm_thr_id,       /* Thread ID */
-                         &alrm_thr_attr,     /* Thread attributes */
-                         SYS2_alrm_thr,      /* Thread function */
-                         NULL);              /* Thread argument */
-    if (ret < 0)
-    {
-      serr("ERROR: SYSTEM_2: Failed to create pthread: %d\n\r",
-           ret);
-      return;
+    if (alarm_st == SYSTEM_2_NORMAL_STATE) {
+        ret = pthread_create(&alrm_thr_id, /* Thread ID */
+            &alrm_thr_attr, /* Thread attributes */
+            SYS2_alrm_thr, /* Thread function */
+            NULL); /* Thread argument */
+        if (ret < 0) {
+            serr("ERROR: SYSTEM_2: Failed to create pthread: %d\n\r",
+                ret);
+            return;
+        }
+
+        alarm_st = SYSTEM_2_ALARM_STATE;
     }
-
-    alarm_st = SYSTEM_2_ALARM_STATE;
-  }
 }
 
 /****************************************************************************
@@ -193,42 +188,37 @@ void SYS2_out_of_control(void)
 
 void SYS2_under_control(void)
 {
-  int ret;
-  void *alrm_thread_retval;
+    int ret;
+    void* alrm_thread_retval;
 
-  ret = OK;
+    ret = OK;
 
-  if (alarm_st == SYSTEM_2_ALARM_STATE)
-  {
-    /* Stop the alarm blinking thread */
-    ret = pthread_cancel(alrm_thr_id);
-    if (ret < 0)
-    {
-      serr("ERROR: SYSTEM_2: Failed to cancel pthread: %d\n\r",
-           ret);
-      return;
+    if (alarm_st == SYSTEM_2_ALARM_STATE) {
+        /* Stop the alarm blinking thread */
+        ret = pthread_cancel(alrm_thr_id);
+        if (ret < 0) {
+            serr("ERROR: SYSTEM_2: Failed to cancel pthread: %d\n\r",
+                ret);
+            return;
+        }
+
+        /* Wait until the thread closes */
+        ret = pthread_join(alrm_thr_id, &alrm_thread_retval);
+        if (ret < 0) {
+            serr("ERROR: SYSTEM_2: Failed to join pthread: %d\n\r",
+                ret);
+            return;
+        }
+
+        if (alrm_thread_retval == PTHREAD_CANCELED) {
+            /* If if is successfully closed
+             * then perform reset the pthread variables
+             */
+            alrm_thr_id = 0;
+            alarm_st = SYSTEM_2_NORMAL_STATE;
+        } else
+            _err("ERROR: SYSTEM_2: Failed to terminate alarm thread\n\r");
     }
-
-    /* Wait until the thread closes */
-    ret = pthread_join(alrm_thr_id, &alrm_thread_retval);
-    if (ret < 0)
-    {
-      serr("ERROR: SYSTEM_2: Failed to join pthread: %d\n\r",
-           ret);
-      return;
-    }
-
-    if (alrm_thread_retval == PTHREAD_CANCELED)
-    {
-      /* If if is successfully closed
-       * then perform reset the pthread variables
-       */
-      alrm_thr_id = 0;
-      alarm_st = SYSTEM_2_NORMAL_STATE;
-    }
-    else _err("ERROR: SYSTEM_2: Failed to terminate alarm thread\n\r");
-  }
 }
-
 
 #endif /* CONFIG_INDUSTRY_APC3_SYSTEM_2 */

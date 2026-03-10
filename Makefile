@@ -1,4 +1,4 @@
-PWD		= ./eng/nxd
+PWD		= ./
 usb		= 0
 acm		= 0
 
@@ -24,7 +24,7 @@ status:
 
 build:
 	@echo "🔨 Сборка в контейнере 'nuttx_builder'..."
-	docker compose run --rm nuttx_builder make -C ./nuttx
+	docker compose run --rm nuttx_builder bear -- make -C ./nuttx
 
 nconfig:
 	@echo "🔨 Вывод меню"
@@ -38,36 +38,30 @@ configure:
 .PHONY: stm32f4-st stm32f1-st stm32f1-j samd usb
 
 stm32f4-st: build
-	@echo "⚡ Прошивка через контейнер 'flasher'..."
-	docker compose run --rm flasher openocd -f interface/stlink.cfg -f target/stm32f4x.cfg \
+	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg \
 		-c 'init' -c 'reset halt' -c 'flash write_image erase $(PWD)/nuttx/nuttx.bin 0x08000000' \
 		-c 'reset' -c 'exit'
 
 stm32f1-st: build
-	@echo "⚡ Прошивка через контейнер 'flasher'..."
-	docker compose run --rm flasher openocd -f interface/stlink.cfg -f target/stm32f1x.cfg \
+	openocd -f interface/stlink.cfg -f target/stm32f1x.cfg \
 		-c 'init' -c 'reset halt' -c 'flash write_image erase $(PWD)/nuttx/nuttx.bin 0x08000000' \
 		-c 'reset' -c 'exit'
 
 stm32f1-j: build
-	@echo "⚡ Прошивка через контейнер 'flasher'..."
-	docker compose run --rm flasher openocd -f interface/jlink.cfg -c "transport select swd" \
+	openocd -f interface/jlink.cfg -c "transport select swd" \
 	-f target/stm32f1x.cfg -c 'init' -c 'reset halt' -c 'flash write_image erase $(PWD)/nuttx/nuttx.bin 0x08000000' \
 	-c 'reset' -c 'exit'
 
 samd: build
-	@echo "⚡ Прошивка через контейнер 'flasher'..."
-	docker compose run --rm flasher openocd -f interface/jlink.cfg -c "transport select swd" \
+	openocd -f interface/jlink.cfg -c "transport select swd" \
 	-f target/at91samdXX.cfg -c "program $(PWD)/nuttx/nuttx.bin verify reset exit 0x00000000"
 
 
 usb:
-	@echo "📟 Открытие последовательного порта через контейнер 'serial'..."
-	docker compose run --rm serial picocom -b 115200 /dev/ttyUSB$(usb)
+	picocom -b 115200 /dev/ttyUSB$(usb)
 
 acm:
-	@echo "📟 Открытие последовательного порта через контейнер 'serial'..."
-	docker compose run --rm serial picocom -b 115200 /dev/ttyACM$(acm)
+	picocom -b 115200 /dev/ttyACM$(acm)
 
 
 # ИНТЕРАКТИВНЫЕ СЕССИИ С КОНКРЕТНЫМИ КОНТЕЙНЕРАМИ

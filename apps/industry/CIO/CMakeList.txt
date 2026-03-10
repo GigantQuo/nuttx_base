@@ -1,0 +1,13 @@
+# ##############################################################################
+# apps/industry/CIO/CMakeLists.txt
+# ##############################################################################
+
+if(CONFIG_INDUSTRY_CIO)
+  nuttx_add_application(
+    NAME
+    ${CONFIG_INDUSTRY_CIO_PROGNAME}
+    STACKSIZE
+    ${CONFIG_INDUSTRY_CIO_STACKSIZE}
+    PRIORITY
+    ${CONFIG_INDUSTRY_CIO_PRIORITY})
+endif()

@@ -7,16 +7,16 @@
  ****************************************************************************/
 
 #include <debug.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <errno.h>
-#include <unistd.h>
 #include <fcntl.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
-#include <sys/types.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
 
 #include <nuttx/ioexpander/gpout.h>
 
@@ -29,15 +29,14 @@
  * Pre-processor Definitions
  ****************************************************************************/
 
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) ||\
-    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-  #define BROKEN_PIN          (BOARD_GPOUT0_1V02_0)
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+#define BROKEN_PIN (BOARD_GPOUT0_1V02_0)
 
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
-  #define BROKEN_PIN          (BOARD_GPOUT0_3V3_0)
+#define BROKEN_PIN (BOARD_GPOUT0_3V3_0)
 
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-  #define BROKEN_PIN          (0xFF) /* Broken pin is not used */
+#define BROKEN_PIN (0xFF) /* Broken pin is not used */
 
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_ */
 /****************************************************************************
@@ -74,58 +73,56 @@
  ****************************************************************************/
 
 int SYS2_gpout_hw(const int fd,
-                  const char bit,
-                  bool val)
+    const char bit,
+    bool val)
 {
-  struct bitval_s upbit;
-  bool check;
-  int ret;
+    struct bitval_s upbit;
+    bool check;
+    int ret;
 
-  ret = OK;
+    ret = OK;
 
-  /* bitval_s initialization */
-  upbit.val = &val;
-  upbit.bit = bit;
+    /* bitval_s initialization */
+    upbit.val = &val;
+    upbit.bit = bit;
 
-  /* Perform one-bit write */
-  ret = ioctl(fd, GPOUT_BIT_WRITE, &upbit);
-  if (ret < 0)
-  {
-    gpioerr("ERROR: SYSTEM_2: Failed to ioctl /dev/gpout: %d\n\r",
+    /* Perform one-bit write */
+    ret = ioctl(fd, GPOUT_BIT_WRITE, &upbit);
+    if (ret < 0) {
+        gpioerr("ERROR: SYSTEM_2: Failed to ioctl /dev/gpout: %d\n\r",
             ret);
+        return ret;
+    }
+
+    if (bit == BROKEN_PIN) /* PB16 is broken */
+    {
+        return ret;
+    }
+
+    /* Aftercheck:
+     * Perform one-bit read
+     */
+
+    /* bitval_s reinitialization */
+    // upbit.val = &check;
+
+    /* Wait until the value has been installed */
+    // usleep(5);
+
+    // ret = ioctl(fd, GPOUT_BIT_READ, &upbit);
+    // if (ret < 0)
+    //{
+    //   gpioerr("ERROR: SYSTEM_2: Failed to ioctl /dev/gpout: %d\n\r",
+    //           ret);
+    //   return ret;
+    // }
+
+    // if (check != val)
+    //{
+    //   ret = -EPWROUT;
+    // }
+
     return ret;
-  }
-
-  if (bit == BROKEN_PIN) /* PB16 is broken */
-  {
-    return ret;
-  }
-
-  /* Aftercheck:
-   * Perform one-bit read
-   */
-
-  /* bitval_s reinitialization */
-  upbit.val = &check;
-
-  /* Wait until the value has been installed */
-  usleep(5);
-
-  ret = ioctl(fd, GPOUT_BIT_READ, &upbit);
-  if (ret < 0)
-  {
-    gpioerr("ERROR: SYSTEM_2: Failed to ioctl /dev/gpout: %d\n\r",
-            ret);
-    return ret;
-  }
-
-  if (check != val)
-  {
-    ret = -EPWROUT;
-  }
-
-  return ret;
 }
-
 
 #endif /* CONFIG_INDUSTRY_APC3_SYSTEM_2 */
