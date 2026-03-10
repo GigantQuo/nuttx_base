@@ -81,7 +81,7 @@ char* usaToEurDate(const char* usaDate)
     eurDate[3] = usaDate[0];
     eurDate[4] = usaDate[1];
     eurDate[5] = usaDate[2];
-    eurDate[6] = usaDate[3]; // μερÿφ
+    eurDate[6] = usaDate[3]; // μερφ
     eurDate[7] = usaDate[7];
     eurDate[8] = usaDate[8];
     eurDate[9] = usaDate[9];
@@ -121,19 +121,23 @@ int CIO_printConsoleUnit(const char* name, const char* param, const char* descri
 
 void CIO_helpCommand(void)
 {
-    CIO_printf(" adc     - show the ADC data\r\n");
-    CIO_printf(" check   - perform the system self check and show status\r\n");
     CIO_printf(" desc    - show description of the project and firmware\r\n");
-    CIO_printf(" gpio    - show the status of gpio inputs and outputs\r\n");
     CIO_printf(" help    - show the command list\r\n");
-    CIO_printf(" humi    - show the humidity data\r\n");
-    CIO_printf(" inter   - show all interfaces\r\n");
-    CIO_printf(" master  - show the master interface bus data\r\n");
-    CIO_printf(" press   - show the pressure data\r\n");
-    CIO_printf(" scheme  - show the structure scheme of project\r\n");
+    CIO_printf(" adc     - show the ADC data\r\n");
+    CIO_printf(" gpio    - show the status of discrete inputs, outputs and interrups\r\n");
+    CIO_printf("  gpinp  - show the status of discrete inputs\r\n");
+    CIO_printf("  gpout  - show the status of discrete outputs\r\n");
+    CIO_printf("  gpint  - show the status of discrete interrups\r\n");
+    CIO_printf(" sercom  - show the SerCom buses\r\n");
+    CIO_printf("  i2c    - show the I2C buses\r\n");
+    CIO_printf("  spi    - show the SPI buses\r\n");
+    CIO_printf("  uart   - show the UART buses\r\n");
+    CIO_printf(" usb     - show the USB bus\r\n");
     CIO_printf(" sens    - show the data from all sensors\r\n");
-    CIO_printf(" slave   - show the slave interface data buffer\r\n");
-    CIO_printf(" temp    - show the temperature data\r\n");
+    CIO_printf("  humi   - show the humidity data\r\n");
+    CIO_printf("  temp   - show the temperature data\r\n");
+    CIO_printf("  press  - show the pressure data\r\n");
+    CIO_printf(" wd      - show the watchdogs data\r\n");
 }
 
 void CIO_printf(const char* format, ...)

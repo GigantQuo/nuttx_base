@@ -71,7 +71,7 @@ void printADC(void)
     CIO_printConsoleUnit("ADC_1V02_1", "PB5 / 13", "ADC 1.02V", getADCFun(dataBuf, 13, 1), "ADC");
     CIO_printConsoleUnit("ADC_0V9   ", "PB6 / 14", "ADC 0.9V", getADCFun(dataBuf, 14, 1), "ADC");
     CIO_printConsoleUnit("ADC_VBAT  ", "PB7 / 15", "BAT ADC", getADCFun(dataBuf, 15, 11), "ADC");
-#elifdef(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
+#elifdef CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS
     CIO_printConsoleUnit("ADC_5V0   ", "PB0 /  8", "ADC 5.0V", getADCFun(dataBuf, 8, 2), "ADC");
     CIO_printConsoleUnit("ADC_3V3   ", "PB1 /  9", "ADC 3.3V", getADCFun(dataBuf, 9, 2), "ADC");
     CIO_printConsoleUnit("ADC_3V3_0 ", "PB2 / 10", "ADC 3.3V", getADCFun(dataBuf, 10, 2), "ADC");
@@ -91,7 +91,7 @@ void printADC(void)
     CIO_printConsoleUnit("ADC_1V02_0", "PB4 / 12", "ADC 1.02V", getADCFun(dataBuf, 12, 1), "ADC");
     CIO_printConsoleUnit("ADC_0V9   ", "PB5 / 13", "ADC 0.9V", getADCFun(dataBuf, 13, 1), "ADC");
     CIO_printConsoleUnit("ADC_VBAT  ", "PB6 / 14", "BAT ADC", getADCFun(dataBuf, 14, 11), "ADC");
-#elifdef(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
+#elifdef CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS
     CIO_printConsoleUnit("ADC_5V0   ", "PB0 /  8", "ADC 5.0V", getADCFun(dataBuf, 8, 2), "ADC");
     CIO_printConsoleUnit("ADC_3V3   ", "PB1 /  9", "ADC 3.3V", getADCFun(dataBuf, 9, 2), "ADC");
     CIO_printConsoleUnit("ADC_3V3_0 ", "PB3 / 10", "ADC 3.3V", getADCFun(dataBuf, 11, 2), "ADC");
@@ -231,7 +231,7 @@ int get_gpout_data(void)
     CIO_printConsoleUnit("1V02_EN_1", "PB17 / 0", "1.02V_1 on", getGPIOFun(retS, buf, 4), "GPOUT");
     CIO_printConsoleUnit("0V9_EN   ", "PB22 / 0", "0.9V on", getGPIOFun(retS, buf, 5), "GPOUT");
     CIO_printConsoleUnit("CONTROL  ", "PA14 / 0", "Battery power on", getGPIOFun(retS, buf, 9), "GPOUT");
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
     CIO_printConsoleUnit("5V0_EN   ", "PB14 / 0", "5.0V on", getGPIOFun(retS, buf, 5), "GPOUT");
     CIO_printConsoleUnit("3V3_EN   ", "PB15 / 0", "3.3V on", getGPIOFun(retS, buf, 0), "GPOUT");
     CIO_printConsoleUnit("3V3_0_EN ", "PB16 / 0", "3.3V_0 on", getGPIOFun(retS, buf, 6), "GPOUT");
@@ -252,7 +252,7 @@ int get_gpout_data(void)
     CIO_printConsoleUnit("1V02_EN_0", "PB16 / 0", "1.02V on", getGPIOFun(retS, buf, 3), "GPOUT");
     CIO_printConsoleUnit("0V9_EN   ", "PB17 / 0", "0.9V on", getGPIOFun(retS, buf, 4), "GPOUT");
     CIO_printConsoleUnit("CONTROL  ", "PA14 / 0", "Battery power on", getGPIOFun(retS, buf, 8), "GPOUT");
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
     CIO_printConsoleUnit("5V0_EN   ", "PB14 / 0", "5.0V on", getGPIOFun(retS, buf, 4), "GPOUT");
     CIO_printConsoleUnit("3V3_EN   ", "PB15 / 0", "3.3V on", getGPIOFun(retS, buf, 0), "GPOUT");
     CIO_printConsoleUnit("3V3_0_EN ", "PB16 / 0", "3.3V_0 on", getGPIOFun(retS, buf, 5), "GPOUT");
@@ -282,7 +282,7 @@ int get_gpout_data(void)
     CIO_printConsoleUnit("PW_OK_SW0 ", "PB23 / 1", "Reset PonCat 0", getGPIOFun(retS, buf, 2), "GPOUT");
     CIO_printConsoleUnit("PW_OK_SW1 ", "PB30 / 1", "Reset PonCat 1", getGPIOFun(retS, buf, 3), "GPOUT");
     CIO_printConsoleUnit("PW_OK_TCA ", "PB31 / 1", "Reset TCA", getGPIOFun(retS, buf, 4), "GPOUT");
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
     CIO_printConsoleUnit("POWER_GOOD", "PA24 / 1", "LED POWER_GOOD", getGPIOFun(retS, buf, 0), "GPOUT");
     CIO_printConsoleUnit("ALARM     ", "PA23 / 1", "LED ALARM", getGPIOFun(retS, buf, 1), "GPOUT");
     CIO_printConsoleUnit("PW_OK_SW0 ", "PB23 / 1", "Reset PonCat 0", getGPIOFun(retS, buf, 2), "GPOUT");
@@ -292,7 +292,7 @@ int get_gpout_data(void)
     CIO_printConsoleUnit("ALARM     ", "PA23 / 1", "LED ALARM", getGPIOFun(retS, buf, 1), "GPOUT");
     CIO_printConsoleUnit("PW_OK_SW0 ", "PB23 / 1", "Reset PonCat 0", getGPIOFun(retS, buf, 2), "GPOUT");
     CIO_printConsoleUnit("PW_OK_TCA ", "PB31 / 1", "Reset TCA", getGPIOFun(retS, buf, 3), "GPOUT");
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
     CIO_printConsoleUnit("POWER_GOOD", "PA24 / 1", "LED POWER_GOOD", getGPIOFun(retS, buf, 0), "GPOUT");
     CIO_printConsoleUnit("ALARM     ", "PA23 / 1", "LED ALARM", getGPIOFun(retS, buf, 1), "GPOUT");
     CIO_printConsoleUnit("PW_OK_SW0 ", "PB23 / 1", "Reset PonCat 0", getGPIOFun(retS, buf, 2), "GPOUT");
@@ -384,8 +384,6 @@ int get_i2c_data(void)
 {
     ssize_t ret = OK;
     struct stat buffer;
-    // ret = (stat("/dev/ttyS", &buffer));
-    // printf("read stat: %i\r\n", ret);
     ret = (stat("/dev/i2cslv1", &buffer));
 
     CIO_printConsoleUnit("I2C_SLAVE1", "PA8/PA9", "I2C slave to PonCat3", ret >= 0 ? "OK" : "BAD", "I2C");
@@ -397,8 +395,6 @@ int get_uart_data(void)
 {
     ssize_t ret = OK;
     struct stat buffer;
-    // ret = (stat("/dev/ttyS", &buffer));
-    // printf("read stat: %i\r\n", ret);
     ret = (stat("/dev/ttyS0", &buffer));
 
     CIO_printConsoleUnit("UART2", "PA12/PA13", "UART for console", ret >= 0 ? "OK" : "BAD", "UART");
@@ -457,7 +453,7 @@ int cio_main(int argc, FAR char* argv[])
 
     if (strncmp(argv[1], "desc", COMMAND_SIZE) == 0) {
         CIO_displayBaseInfo(PRJ_MODEL, PRJ_VERSION, __DATE__, PRJ_AUTHOR);
-    } else if (strncmp(argv[1], "help", COMMAND_SIZE) == 0 || strncmp(argv[1], "h", COMMAND_SIZE) == 0) {
+    } else if (strncmp(argv[1], "help", COMMAND_SIZE) == 0 || strncmp(argv[1], "h", COMMAND_SIZE) == 0 || strncmp(argv[1], "-h", COMMAND_SIZE) == 0 || strncmp(argv[1], "?", COMMAND_SIZE) == 0) {
         CIO_helpCommand();
     } else if (strncmp(argv[1], "adc", COMMAND_SIZE) == 0) {
         int adc[CIO_MAX_ADC_CHANNEL_NUM];
