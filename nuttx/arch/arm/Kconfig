@@ -6,6 +6,15 @@
 if ARCH_ARM
 comment "ARM Options"
 
+config ARCH_ARM_BOOTLOADER
+	bool "ARM Bootloader"
+	select ARCH_HAVE_BOOTLOADER
+	default n
+	---help---
+		It is a ARM dedicated bootloader thar link to
+		the dedicated initial .bootloader section
+		instead classic .text.
+
 choice
 	prompt "ARM Toolchain Selection"
 	default ARM_TOOLCHAIN_GNU_EABI

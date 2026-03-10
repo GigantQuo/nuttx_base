@@ -80,5 +80,9 @@ int sam_bringup(void)
   }
 #endif /* CONFIG_FS_PROCFS */
 
+#if defined(CONFIG_SAMD2L2_NVMCTRL)
+  sam_nvm();
+#endif /* CONFIG_SAMD2L2_NVMCTRL */
+
   return ret;
 }

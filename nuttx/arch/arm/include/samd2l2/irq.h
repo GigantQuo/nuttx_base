@@ -46,6 +46,8 @@
 
 /* Processor Exceptions (vectors 0-15) */
 
+#define SAM_IRQ_NVIC_COUNT      32
+
 #define SAM_IRQ_RESERVED       (0) /* Reserved vector (only used with CONFIG_DEBUG_FEATURES) */
                                    /* Vector  0: Reset stack pointer value */
                                    /* Vector  1: Reset (not handler as an IRQ) */

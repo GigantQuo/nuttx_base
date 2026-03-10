@@ -55,13 +55,13 @@ void readOutput(char* outputBuffer)
 char* getADCFun(char* dataBuf, int chanel, int div)
 {
     int mV = ADC2MVOLT(adc_buf[chanel]) * div;
-    snprintf(dataBuf, 10, "%i.%iV", mV / 1000, (mV % 1000) / 100);
+    snprintf(dataBuf, 13, "%i.%iV", mV / 1000, (mV % 1000) / 100);
     return dataBuf;
 }
 
 void printADC(void)
 {
-    char dataBuf[10];
+    char dataBuf[13];
 #ifdef CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S
     CIO_printConsoleUnit("ADC_5V0   ", "PB0 /  8", "ADC 5.0V", getADCFun(dataBuf, 8, 2), "ADC");
     CIO_printConsoleUnit("ADC_3V3   ", "PB1 /  9", "ADC 3.3V", getADCFun(dataBuf, 9, 2), "ADC");
@@ -149,7 +149,7 @@ int get_adc_data(void)
 char* getGPIOFun(char* buf, char* data, int bit)
 {
     int ret = (data[bit / 8] & (1 << (bit % 8))) >> (bit % 8);
-    snprintf(buf, 2, "%i", ret);
+    snprintf(buf, 4, "%i", ret);
     return buf;
 }
 
@@ -172,7 +172,7 @@ int get_gpinp_data(void)
     }
 
 #if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-    char retS[2];
+    char retS[4];
     CIO_printConsoleUnit("PWR1_PRE  ", "PA0  / 0", "Power 1 present", getGPIOFun(retS, buf, 0), "GPINP");
     CIO_printConsoleUnit("PWR1_AC_OK", "PA2  / 0", "Power 1 AC ok", getGPIOFun(retS, buf, 1), "GPINP");
     CIO_printConsoleUnit("PWR1_ALERT", "PA4  / 0", "Power 1 alert", getGPIOFun(retS, buf, 2), "GPINP");
@@ -185,7 +185,7 @@ int get_gpinp_data(void)
     CIO_printConsoleUnit("BAT_LOW   ", "PA11 / 0", "Battery charge low", getGPIOFun(retS, buf, 9), "GPINP");
 
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-    char retS[2];
+    char retS[4];
     CIO_printConsoleUnit("PWR1_PRE", "PA0  / 0", "Power 1 present", getGPIOFun(retS, buf, 0), "GPINP");
     CIO_printConsoleUnit("PWR1_PG ", "PA2  / 0", "Power 1 ", getGPIOFun(retS, buf, 1), "GPINP");
     CIO_printConsoleUnit("PWR2_PRE", "PA1  / 0", "Power 2 present", getGPIOFun(retS, buf, 2), "GPINP");
@@ -405,9 +405,9 @@ int get_uart_data(void)
 char* getWDFun(char* buf, struct watchdog_status_s wdt_status)
 {
     if ((wdt_status.flags & WDFLAGS_ACTIVE) > 0) {
-        snprintf(buf, 6, "%u.%u s", wdt_status.timeout / 1000, wdt_status.timeout % 1000 / 100);
+        snprintf(buf, 12, "%u.%u s", (unsigned int)(wdt_status.timeout / 1000), (unsigned int)(wdt_status.timeout % 1000 / 100));
     } else {
-        snprintf(buf, 6, "OFF");
+        snprintf(buf, 12, "OFF");
     }
     return buf;
 }
@@ -416,7 +416,7 @@ int get_watchdog_data(void)
 {
     ssize_t ret;
     int fd;
-    char retS[6];
+    char retS[12];
     struct watchdog_status_s wdt_status;
 
     fd = open("/dev/watchdog0", O_RDONLY);

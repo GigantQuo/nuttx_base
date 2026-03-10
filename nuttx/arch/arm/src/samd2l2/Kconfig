@@ -1136,3 +1136,19 @@ config SAMD2L2_USB_REGDEBUG
 		CONFIG_DEBUG_USB_INFO.
 
 endmenu # USB options
+
+
+if SAMD2L2_NVMCTRL
+
+menu "NVMCTRL optoins"
+
+config SAMD2L2_FLASH_NROWS
+	int "Number of used rows in flash memory"
+	default 5
+	---help---
+		Choose the number of rows in flash memory (1 row = 4 pages)
+		that will be used by NVM controller.
+
+endmenu # NVMCTRL optoins
+
+endif # SAMD2L2_NVMCTRL

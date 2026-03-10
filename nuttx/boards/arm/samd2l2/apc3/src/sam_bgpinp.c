@@ -104,14 +104,15 @@ void sam_gpinp_register(unsigned int minor)
                                  sizes[i]);
     if (gpinp == NULL)
     {
-      _err("ERROR: Failed to initialize gpinputs\n\r");
+      gpioerr("ERROR: BRINGUP: Failed to initialize gpinp%d\n\r",
+              i);
       return;
     }
     ret = gpinp_register(gpinp, minor++);
     if (ret < 0)
     {
-      _err("ERROR: Failed to register GPINP%d driver: %d\n",
-          minor, (unsigned int)ret);
+      gpioerr("ERROR: BRINGUP: Failed to register GPINP%d driver: %d\n",
+              minor, (unsigned int)ret);
 
       sam_gpinp_uninitialize(gpinp);
       gpinp = NULL;

@@ -52,4 +52,8 @@ ifeq ($(CONFIG_WATCHDOG),y)
 CSRCS += sam_bwdt.c
 endif
 
+ifeq ($(CONFIG_SAMD2L2_NVMCTRL),y)
+CSRCS += sam_bnvm.c
+endif
+
 include $(TOPDIR)/boards/Board.mk

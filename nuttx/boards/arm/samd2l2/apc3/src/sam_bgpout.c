@@ -183,16 +183,16 @@ void sam_gpout_register(unsigned int minor)
                                  sizes[i]);
     if (gpout == NULL)
     {
-      _err("ERROR: Failed to initialize gpout%d\n\r",
-           i);
+      gpioerr("ERROR: BRINGUP: Failed to initialize gpout%d\n\r",
+              i);
       return;
     }
 
     ret = gpout_register(gpout, minor++);
     if (ret < 0)
     {
-      _err("ERROR: Failed to register GPOUT%d driver: %d\n",
-           minor, (unsigned int)ret);
+      gpioerr("ERROR: BRINGUP: Failed to register GPOUT%d driver: %d\n",
+              minor, (unsigned int)ret);
 
       sam_gpout_uninitialize(gpout);
       gpout = NULL;

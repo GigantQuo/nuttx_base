@@ -34,6 +34,7 @@
 #include <errno.h>
 #include <sys/param.h>
 
+#include <arch/board/board.h>
 
 #include <nuttx/arch.h>
 #include <nuttx/mutex.h>
@@ -46,8 +47,6 @@
 #include "sam_nvmctrl.h"
 
 #if defined(CONFIG_SAMD2L2_NVMCTRL)
-
-
 /****************************************************************************
  * Pre-processor Definitions
  ****************************************************************************/
@@ -225,7 +224,7 @@ static int nvm_command(uint16_t cmd, uint32_t arg)
 
   /* Set address */
   if (arg)
-    putreg32(arg, SAM_NVMCTRL_ADDR);
+    putreg32((arg/2), SAM_NVMCTRL_ADDR);
 
   /* Write the command to the flash command register */
   putreg16(cmd | NVMCTRL_CTRLA_CMDEX, SAM_NVMCTRL_CTRLA);
@@ -372,9 +371,9 @@ int sam_nvmctrl_initialize(void)
    * Cache is enabled.
    */
 
-  ctrlb = (NVMCTRL_CTRLB_RWS(0)                    |
-           NVMCTRL_CTRLB_MANW                      |
-           NVMCTRL_CTRLB_SLEEPPRM_WAKEONACCESS     |
+  ctrlb = (NVMCTRL_CTRLB_RWS(BOARD_FLASH_WAITSTATES)  |
+           NVMCTRL_CTRLB_MANW                         |
+           NVMCTRL_CTRLB_SLEEPPRM_WAKEONACCESS        |
            NVMCTRL_CTRLB_READMODE_NO_MISS_PENALTY);
 
   ctrlb &= ~NVMCTRL_CTRLB_CACHEDIS;
