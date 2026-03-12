@@ -244,7 +244,7 @@ int system_2_start(int argc, char* argv[])
     struct sigaction act_rstrq;
     sig_ctx_s2_t sig_ctx_rstrq;
 
-    _info("SYSTEM_2 Started successfully!\n\r");
+    _info("SYSTEM_2 Started successfully!");
 
     ret = OK;
 
@@ -310,8 +310,8 @@ int system_2_start(int argc, char* argv[])
         /* No valid PU in the device - call PANIC */
         case (SYSTEM_2_NO_PU):
             if (script != prev_scr) {
-                _info("\n\rPANIC!: Illegal situation\n\r");
-                _info("There is no Power Unit in the device!\n\r");
+                _info("\n\rPANIC!: Illegal situation");
+                _info("There is no Power Unit in the device!");
             }
             /* Indication:
              * POWER OK - OFF,
@@ -340,8 +340,8 @@ int system_2_start(int argc, char* argv[])
         /* There is both PU in the device - call PANIC */
         case (SYSTEM_2_BOTH_PU):
             if (script != prev_scr) {
-                _info("\n\rPANIC!: Illegal situation\n\r");
-                _info("There is both Power Unit in the device!\n\r");
+                _info("\n\rPANIC!: Illegal situation");
+                _info("There is both Power Unit in the device!");
             }
             /* Indication:
              * POWER OK - OFF,
@@ -373,11 +373,11 @@ int system_2_start(int argc, char* argv[])
             char bad_pu;
             char prev_bad_pu;
 
-            blocks_message = "\n\rSYSTEM ERROR\r\n";
-            pu_message = "\n\rAll PU is broken!\n\r";
+            blocks_message = "\n\rSYSTEM ERROR";
+            pu_message = "\n\rAll PU is broken!";
 
             if (script != prev_scr) {
-                _info("\n\rMains power script running!\n\r");
+                _info("Mains power script running!");
 
                 /* Reset to new message */
                 retfl = 0x00;
@@ -402,7 +402,7 @@ int system_2_start(int argc, char* argv[])
             case_1: /* Enter point */
 
                 blocks_message = "\n\rFAILED:\n\rPU - BAD\n\rB1 - BAD\
-\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+\n\rB2 - BAD\n\rB3 - BAD";
 
                 /* Indication:
                  * POWER OK - OFF,
@@ -431,7 +431,7 @@ int system_2_start(int argc, char* argv[])
             /* All blocks is BAD, but PU is OK */
             case (1):
                 blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - BAD\
-\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+\n\rB2 - BAD\n\rB3 - BAD";
 
                 /* Indication:
                  * POWER OK - OFF,
@@ -459,7 +459,7 @@ int system_2_start(int argc, char* argv[])
             /* Blocks 2-3 is BAD, but PU and Block 1 is OK */
             case (2):
                 blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - OK\
-\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+\n\rB2 - BAD\n\rB3 - BAD";
 
                 /* Indication:
                  * POWER OK - OFF,
@@ -483,7 +483,7 @@ int system_2_start(int argc, char* argv[])
             /* Block 3 is BAD, but PU and Blocks 1-2 is OK */
             case (3):
                 blocks_message = "\n\rFAILED:\n\rPU - OK\n\rB1 - OK\
-\n\rB2 - OK\n\rB3 - BAD\n\n\r";
+\n\rB2 - OK\n\rB3 - BAD";
 
                 /* Indication:
                  * POWER OK - OFF,
@@ -510,7 +510,7 @@ int system_2_start(int argc, char* argv[])
             /* All blocks and PU is OK */
             case (4):
                 blocks_message = "\n\rPASSED:\n\rPU - OK\n\rB1 - OK\
-\n\rB2 - OK\n\rB3 - OK\n\n\r";
+\n\rB2 - OK\n\rB3 - OK";
 
                 /* Indication:
                  * POWER OK - ON,
@@ -552,9 +552,9 @@ int system_2_start(int argc, char* argv[])
 
             case (1):
 #if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                pu_message = "\n\rRight PU is broken!\n\r";
+                pu_message = "Right PU is broken!";
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-                pu_message = "\n\rLeft PU is broken!\n\r";
+                pu_message = "Left PU is broken!";
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_ */
 
                 /* Power:
@@ -579,9 +579,9 @@ int system_2_start(int argc, char* argv[])
 
             case (2):
 #if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
-                pu_message = "\n\rLeft PU is broken!\n\r";
+                pu_message = "Left PU is broken!";
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
-                pu_message = "\n\rRight PU is broken!\n\r";
+                pu_message = "Right PU is broken!";
 #endif /* CONFIG_ARCH_BOARD_APC3_ARLAN_ */
 
                 /* Wait until the PU 2 voltage become stable */
@@ -608,7 +608,7 @@ int system_2_start(int argc, char* argv[])
                 break;
 
             case (3):
-                pu_message = "\n\rAll PU is functional!\n\r";
+                pu_message = "All PU is functional!";
 
 /* Not used now: reserved algorithm */
 #if defined(CONFIG_INDUSTRY_APC3_SYSTEM_2_RESERVED)
@@ -665,7 +665,7 @@ int system_2_start(int argc, char* argv[])
         /* Only Accumulator PU in the device - call ACC script */
         case (SYSTEM_2_ACC_PU):
             if (script != prev_scr) {
-                _info("\n\rAccumulator power script running!\n\r");
+                _info("Accumulator power script running!");
             }
 
             retfl = SYS2_acc_script();
@@ -682,7 +682,7 @@ int system_2_start(int argc, char* argv[])
             case_0: /* Enter point */
 
                 blocks_message = "\n\rFAILED:\n\rACC - BAD\n\rB1 - BAD\
-\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+\n\rB2 - BAD\n\rB3 - BAD";
 
                 /* Indication:
                  * POWER OK - OFF,
@@ -711,7 +711,7 @@ int system_2_start(int argc, char* argv[])
             /* All blocks is BAD, but ACC is OK */
             case (1):
                 blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - BAD\
-\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+\n\rB2 - BAD\n\rB3 - BAD";
 
                 /* Indication:
                  * POWER OK - OFF,
@@ -739,7 +739,7 @@ int system_2_start(int argc, char* argv[])
                 /* Blocks 2-3 is BAD, but ACC and Block 1 is OK */
             case (2):
                 blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - OK\
-\n\rB2 - BAD\n\rB3 - BAD\n\n\r";
+\n\rB2 - BAD\n\rB3 - BAD";
 
                 /* Indication:
                  * POWER OK - OFF,
@@ -767,7 +767,7 @@ int system_2_start(int argc, char* argv[])
                 /* Block 3 is BAD, but ACC and Blocks 1-2 is OK */
             case (3):
                 blocks_message = "\n\rFAILED:\n\rACC - OK\n\rB1 - OK\
-\n\rB2 - OK\n\rB3 - BAD\n\n\r";
+\n\rB2 - OK\n\rB3 - BAD";
 
                 /* Indication:
                  * POWER OK - OFF,
@@ -795,7 +795,7 @@ int system_2_start(int argc, char* argv[])
             /* All blocks and ACC is OK */
             case (4):
                 blocks_message = "\n\rPASSED:\n\rACC - OK\n\rB1 - OK\
-\n\rB2 - OK\n\rB3 - OK\n\n\r";
+\n\rB2 - OK\n\rB3 - OK";
 
                 /* Indication:
                  * POWER OK - ON,
@@ -833,7 +833,7 @@ int system_2_start(int argc, char* argv[])
         /* Unknown code due to a hardware error - call PANIC */
         default:
             if (script != prev_scr) {
-                _info("\n\rPANIC!: Unknown situation\n\r");
+                _info("PANIC!: Unknown situation");
             }
 
             /* Indication:

@@ -157,7 +157,7 @@ int apc3_main(int argc, FAR char* argv[])
     /************** Starting SYSTEM_0 - Debug Console */
 #if defined(CONFIG_INDUSTRY_APC3_SYSTEM_0)
     {
-        _info("SYSTEM_0 Starting...\n\r");
+        _info("SYSTEM_0 Starting...");
 
         g_system_pids->pids[0] = task_create("SYSTEM_0",
             CONFIG_INDUSTRY_APC3_SYSTEM_0_PRIORITY,
@@ -176,7 +176,7 @@ int apc3_main(int argc, FAR char* argv[])
     /************** Starting SYSTEM_1 - I2C Slave Interface */
 #if defined(CONFIG_INDUSTRY_APC3_SYSTEM_1)
     {
-        _info("SYSTEM_1 Starting...\n\r");
+        _info("SYSTEM_1 Starting...");
 
         g_system_pids->pids[1] = task_create("SYSTEM_1",
             CONFIG_INDUSTRY_APC3_SYSTEM_1_PRIORITY,
@@ -194,7 +194,7 @@ int apc3_main(int argc, FAR char* argv[])
     /************** Starting SYSTEM_2 - Power Manager */
 #if defined(CONFIG_INDUSTRY_APC3_SYSTEM_2)
     {
-        _info("SYSTEM_2 Starting...\n\r");
+        _info("SYSTEM_2 Starting...");
 
         g_system_pids->pids[2] = task_create("SYSTEM_2",
             CONFIG_INDUSTRY_APC3_SYSTEM_2_PRIORITY,
@@ -212,7 +212,7 @@ int apc3_main(int argc, FAR char* argv[])
     /************** Starting SYSTEM_3 - LED Pointer */
 #if defined(CONFIG_INDUSTRY_APC3_SYSTEM_3)
     {
-        _info("SYSTEM_3 Starting...\n\r");
+        _info("SYSTEM_3 Starting...");
 
         g_system_pids->pids[3] = task_create("SYSTEM_3",
             CONFIG_INDUSTRY_APC3_SYSTEM_3_PRIORITY,
@@ -230,7 +230,7 @@ int apc3_main(int argc, FAR char* argv[])
     /************** Starting SYSTEM_4 - Reset Manager */
 #if defined(CONFIG_INDUSTRY_APC3_SYSTEM_4)
     {
-        _info("SYSTEM_4 Starting...\n\r");
+        _info("SYSTEM_4 Starting...");
 
         g_system_pids->pids[4] = task_create("SYSTEM_4",
             CONFIG_INDUSTRY_APC3_SYSTEM_4_PRIORITY,

@@ -127,7 +127,7 @@ static int SYS2_check_PU(char *bad_pu)
     {
       if (prev_raw != raw[0])
       {
-        _info("%s PU is gone!\n\r", PU);
+        _info("%s PU is gone!", PU);
       }
       *bad_pu &= ~(0x1 << i);
       continue;
@@ -136,7 +136,7 @@ static int SYS2_check_PU(char *bad_pu)
     {
       if (prev_raw != raw[0])
       {
-        _info("%s PU AC is gone!\n\r", PU);
+        _info("%s PU AC is gone!", PU);
       }
       *bad_pu &= ~(0x1 << i);
     }
@@ -144,7 +144,7 @@ static int SYS2_check_PU(char *bad_pu)
     {
       if (prev_raw != raw[0])
       {
-        _info("%s PU ALERT!\n\r", PU);
+        _info("%s PU ALERT!", PU);
       }
       *bad_pu &= ~(0x1 << i);
     }
@@ -156,7 +156,7 @@ static int SYS2_check_PU(char *bad_pu)
       {
         if (prev_raw != raw[0])
         {
-          _info("%s PU PW_OK is gone!\n\r", PU);
+          _info("%s PU PW_OK is gone!", PU);
         }
         *bad_pu &= ~(0x1 << i);
       }
@@ -173,7 +173,7 @@ static int SYS2_check_PU(char *bad_pu)
     {
       if (prev_raw != raw[0])
       {
-        _info("%s PU is gone!\n\r", PU);
+        _info("%s PU is gone!", PU);
       }
       *bad_pu &= ~(0x1 << i);
       continue;
@@ -182,7 +182,7 @@ static int SYS2_check_PU(char *bad_pu)
     {
       if (prev_raw != raw[0])
       {
-        _info("%s PU AC is gone!\n\r", PU);
+        _info("%s PU AC is gone!", PU);
       }
       *bad_pu &= ~(0x1 << i);
     }

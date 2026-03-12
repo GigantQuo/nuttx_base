@@ -6,21 +6,9 @@
  * 32KB of SRAM beginning at address 0x2000:0000
  */
 
-#include <nuttx/config.h>
-
-#ifdef CONFIG_ARCH_ARM_BOOTLOADER
-    #define SAMD2L2_BOOTLOADER_ORIGIN     0x00000000
-    #define SAMD2L2_BOOTLOADER_SIZE       8K
-    #define SAMD2L2_FLASH_ORIGIN          0x00002000
-    #define SAMD2L2_FLASH_SIZE            248K
-#else
-    #define SAMD2L2_FLASH_ORIGIN          0x00000000
-    #define SAMD2L2_FLASH_SIZE            256K
-#endif
-
 MEMORY
 {
-  flash      (rx)   : ORIGIN = SAMD2L2_FLASH_ORIGIN, LENGTH = SAMD2L2_FLASH_SIZE
+  flash      (rx)   : ORIGIN = 0x00000000, LENGTH = 256K
   sram       (rwx)  : ORIGIN = 0x20000000, LENGTH = 32K
 }
 
@@ -33,9 +21,7 @@ SECTIONS
 {
     .text : {
         _stext = ABSOLUTE(.);
-#ifndef CONFIG_ARCH_ARM_BOOTLOADER
         *(.vectors)
-#endif
         *(.text .text.*)
         *(.fixup)
         *(.gnu.warning)

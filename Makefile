@@ -39,15 +39,9 @@ stm32f1-j: build
 	openocd -f interface/jlink.cfg -c "transport select swd" \
 	-f target/stm32f1x.cfg -c 'init' -c 'reset halt' -c 'flash write_image erase $(PWD)/nuttx/nuttx.bin 0x08000000' \
 	-c 'reset' -c 'exit'
-samdboot: build
-	openocd -f interface/jlink.cfg -c "transport select swd" \
-	-f target/at91samdXX.cfg -c "program $(PWD)/build/bootloader.bin verify reset exit 0x00000000"
 samd: build
 	openocd -f interface/jlink.cfg -c "transport select swd" \
 	-f target/at91samdXX.cfg -c "program $(PWD)/build/nuttx.bin verify reset exit 0x00000000"
-samdimg: mklfs
-	openocd -f interface/jlink.cfg -c "transport select swd" \
-	-f target/at91samdXX.cfg -c "program $(PWD)/build/nuttx.img verify reset exit 0x00000000"
 
 usb:
 	picocom -b 115200 /dev/ttyUSB$(usb)

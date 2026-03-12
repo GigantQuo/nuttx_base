@@ -53,15 +53,6 @@ AFLAGS += $(INCLUDES)
 
 NUTTX = $(call CONVERT_PATH,$(TOPDIR)$(DELIM)nuttx$(EXEEXT))
 
-# Bootloader definitions
-ifeq ($(CONFIG_ARCH_ARM_BOOTLOADER),y)
-BOOTLOADER_DIR = $(ARCH_SRCDIR)$(DELIM)chip$(DELIM)bootloader
-
-include $(BOOTLOADER_DIR)/Bootloader.mk
-
-CLEAN_TARGETS += bootloader_clean
-endif
-
 # Additional rules for system call wrapper
 
 ifeq ($(CONFIG_SCHED_INSTRUMENTATION_SYSCALL),y)
@@ -275,7 +266,7 @@ depend: .depend
 
 context::
 
-clean: bootloader_clean
+clean:
 ifeq ($(BOARDMAKE),y)
 	$(Q) $(MAKE) -C board clean
 endif

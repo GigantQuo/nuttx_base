@@ -110,7 +110,7 @@ int system_1_start(int argc, char *argv[])
   ssize_t ret;
   int fd;
 
-  _info("SYSTEM_1 Started successfully!\n\r");
+  _info("SYSTEM_1 Started successfully!");
 
   ret = OK;
   devpath = "/dev/i2cslv1";

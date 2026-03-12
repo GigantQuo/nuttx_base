@@ -124,13 +124,13 @@ static inline int SYS2_check_ACC(void)
     if (!(AC_OK_BAT(raw))) /* AC_OK_BAT */
     {
         if (prev_raw != VALID_BYTE(raw)) {
-            _info("ACC AC_OK is gone!\n\r");
+            _info("ACC AC_OK is gone!");
         }
         ret = 0;
     } else if (!(BAT_LOW(raw))) /* BAT_LOW */
     {
         if (prev_raw != VALID_BYTE(raw)) {
-            _info("ACC battery low!\n\r");
+            _info("ACC battery low!");
         }
     }
 
@@ -215,7 +215,7 @@ static inline int SYS2_check_VBAT(void)
                  * across diodes.
                  */
                 if ((voltage.am_data < 15500) || (voltage.am_data > 24500)) {
-                    _info("12.0V (ena) voltage out of range (9.6V-14.2V): %d mV\n\r",
+                    _info("12.0V (ena) voltage out of range (9.6V-14.2V): %d mV",
                         (int)ADC2MVOLT(voltage.am_data + 600) * 11);
 
                     pwout_cntr++;
@@ -237,7 +237,7 @@ static inline int SYS2_check_VBAT(void)
                  * across diodes.
                  */
                 if ((voltage.am_data < 17000) || (voltage.am_data > 24000)) {
-                    _info("12.0V (dis) voltage out of range (9.6V-14.2V): %d mV\n\r",
+                    _info("12.0V (dis) voltage out of range (9.6V-14.2V): %d mV",
                         (int)ADC2MVOLT(voltage.am_data + 600) * 11);
 
                     pwout_cntr++;

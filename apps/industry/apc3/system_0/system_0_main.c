@@ -53,7 +53,7 @@ int system_0_start(int argc, char* argv[])
 {
   int ret;
 
-  _info("SYSTEM_0 Started successfully!\n\r");
+  _info("SYSTEM_0 Started successfully!");
 
   ret = OK;
 

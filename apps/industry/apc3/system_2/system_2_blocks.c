@@ -168,7 +168,7 @@ int SYS2_check_block_1(void)
              * 3.3V+5% : 34407 (3.46V)
              */
             if ((voltages.am_data < 31129) || (voltages.am_data > 34407)) {
-                _info("3.3V voltage out of range (3.14V-3.46V): %d mV\n\r",
+                _info("3.3V voltage out of range (3.14V-3.46V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data) * 2);
 
                 pwout_cntr++;
@@ -186,7 +186,7 @@ int SYS2_check_block_1(void)
              * 3.3V    : 65535 (ceiling)
              */
             if (voltages.am_data < 62258) {
-                _info("3.3V voltage out of range (3.14V-3.46V): %d mV\n\r",
+                _info("3.3V voltage out of range (3.14V-3.46V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data));
 
                 pwout_cntr++;
@@ -209,7 +209,7 @@ int SYS2_check_block_1(void)
              * 1.8V+5% : 37535 (1.89V)
              */
             if ((voltages.am_data < 33959) || (voltages.am_data > 37535)) {
-                _info("1.8V voltage out of range (1.71V-1.89V): %d mV\n\r",
+                _info("1.8V voltage out of range (1.71V-1.89V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data));
 
                 pwout_cntr++;
@@ -230,7 +230,7 @@ int SYS2_check_block_1(void)
              * 1.5V+5% : 31279 (1.57V)
              */
             if ((voltages.am_data < 28299) || (voltages.am_data > 31279)) {
-                _info("1.5V voltage out of range (1.43V-1.57V): %d mV\n\r",
+                _info("1.5V voltage out of range (1.43V-1.57V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data));
 
                 pwout_cntr++;
@@ -251,7 +251,7 @@ int SYS2_check_block_1(void)
              * 1.0V+5% : 20852 (1.04V)
              */
             if ((voltages.am_data < 18866) || (voltages.am_data > 20852)) {
-                _info("1.02V_0 voltage out of range (0.96V-1.04V): %d mV\n\r",
+                _info("1.02V_0 voltage out of range (0.96V-1.04V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data));
 
                 pwout_cntr++;
@@ -273,7 +273,7 @@ int SYS2_check_block_1(void)
              * 1.0V+5% : 20852 (1.04V)
              */
             if ((voltages.am_data < 18866) || (voltages.am_data > 20852)) {
-                _info("1.02V_1 voltage out of range (0.96V-1.04V): %d mV\n\r",
+                _info("1.02V_1 voltage out of range (0.96V-1.04V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data));
 
                 pwout_cntr++;
@@ -296,7 +296,7 @@ int SYS2_check_block_1(void)
              * 0V9V+5% : 18767 (0.94V)
              */
             if ((voltages.am_data < 16979) || (voltages.am_data > 18767)) {
-                _info("0.9V voltage out of range (0.94V-0.85V): %d mV\n\r",
+                _info("0.9V voltage out of range (0.94V-0.85V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data));
 
                 pwout_cntr++;
@@ -464,7 +464,7 @@ int SYS2_check_block_2(void)
              * 1.0V+5% : 20852 (1.04V)
              */
             if ((voltages.am_data < 18866) || (voltages.am_data > 20852)) {
-                _info("1.0V_0 voltage out of range (0.96V-1.04V): %d mV\n\r",
+                _info("1.0V_0 voltage out of range (0.96V-1.04V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data));
 
                 pwout_cntr++;
@@ -486,7 +486,7 @@ int SYS2_check_block_2(void)
              * 1.0V+5% : 20852 (1.04V)
              */
             if ((voltages.am_data < 18866) || (voltages.am_data > 20852)) {
-                _info("1.0V_1 voltage out of range (0.96V-1.04V): %d mV\n\r",
+                _info("1.0V_1 voltage out of range (0.96V-1.04V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data));
 
                 pwout_cntr++;
@@ -509,7 +509,7 @@ int SYS2_check_block_2(void)
              * 3.3V+x% : 36480 (3.67V)
              */
             if ((voltages.am_data < 31129) || (voltages.am_data > 34407)) {
-                _info("3.3V_0 voltage out of range (2.66V-3.67V): %d mV\n\r",
+                _info("3.3V_0 voltage out of range (2.66V-3.67V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data) * 2);
 
                 pwout_cntr++;
@@ -532,7 +532,7 @@ int SYS2_check_block_2(void)
              * 3.3V+x% : 36480 (3.67V)
              */
             if ((voltages.am_data < 31129) || (voltages.am_data > 34407)) {
-                _info("3.3V_1 voltage out of range (2.66V-3.67V): %d mV\n\r",
+                _info("3.3V_1 voltage out of range (2.66V-3.67V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data) * 2);
 
                 pwout_cntr++;
@@ -649,7 +649,7 @@ int SYS2_check_block_3(void)
              * 5.0V+5% : 52131 (5.25V)
              */
             if ((voltages.am_data < 47165) || (voltages.am_data > 52131)) {
-                _info("5.0V voltage out of range (4.75V-5.25V): %d mV\n\r",
+                _info("5.0V voltage out of range (4.75V-5.25V): %d mV",
                     (int)ADC2MVOLT(voltages.am_data) * 2);
 
                 pwout_cntr++;
