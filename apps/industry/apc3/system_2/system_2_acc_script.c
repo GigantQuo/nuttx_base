@@ -121,7 +121,7 @@ static inline int SYS2_check_ACC(void)
 
     CLOSE(fd);
 
-    if (!(AC_OK_BAT(raw))) /* AC_OK_BAT */
+    if (AC_OK_BAT(raw)) /* AC_OK_BAT */
     {
         if (prev_raw != VALID_BYTE(raw)) {
             _info("ACC AC_OK is gone!");
