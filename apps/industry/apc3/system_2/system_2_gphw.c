@@ -29,7 +29,8 @@
  * Pre-processor Definitions
  ****************************************************************************/
 
-#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
+#if defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_S) || \
+    defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
 #define BROKEN_PIN (BOARD_GPOUT0_1V02_0)
 
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)

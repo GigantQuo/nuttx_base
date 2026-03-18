@@ -49,7 +49,7 @@ int* adc_buf;
 void readOutput(char* outputBuffer)
 {
     printf(outputBuffer);
-    usleep(500);
+    usleep(5000);
 }
 
 char* getADCFun(char* dataBuf, int chanel, int div)
@@ -227,21 +227,21 @@ int get_gpout_data(void)
     CIO_printConsoleUnit("3V3_EN   ", "PB13 / 0", "3.3V on", getGPIOFun(retS, buf, 0), "GPOUT");
     CIO_printConsoleUnit("1V8_EN   ", "PB14 / 0", "1.8V on", getGPIOFun(retS, buf, 1), "GPOUT");
     CIO_printConsoleUnit("1V5_EN   ", "PB15 / 0", "1.5V on", getGPIOFun(retS, buf, 2), "GPOUT");
-    CIO_printConsoleUnit("1V02_EN_0", "PB16 / 0", "1.02V_0 on", getGPIOFun(retS, buf, 3), "GPOUT");
+    CIO_printConsoleUnit("1V02_EN_0", "PB16 / 0", "1.02V_0 on (BROKEN! MISREAD!)", getGPIOFun(retS, buf, 3), "GPOUT");
     CIO_printConsoleUnit("1V02_EN_1", "PB17 / 0", "1.02V_1 on", getGPIOFun(retS, buf, 4), "GPOUT");
     CIO_printConsoleUnit("0V9_EN   ", "PB22 / 0", "0.9V on", getGPIOFun(retS, buf, 5), "GPOUT");
     CIO_printConsoleUnit("CONTROL  ", "PA14 / 0", "Battery power on", getGPIOFun(retS, buf, 9), "GPOUT");
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
     CIO_printConsoleUnit("5V0_EN   ", "PB14 / 0", "5.0V on", getGPIOFun(retS, buf, 5), "GPOUT");
     CIO_printConsoleUnit("3V3_EN   ", "PB15 / 0", "3.3V on", getGPIOFun(retS, buf, 0), "GPOUT");
-    CIO_printConsoleUnit("3V3_0_EN ", "PB16 / 0", "3.3V_0 on", getGPIOFun(retS, buf, 6), "GPOUT");
+    CIO_printConsoleUnit("3V3_0_EN ", "PB16 / 0", "3.3V_0 on (BROKEN! MISREAD!)", getGPIOFun(retS, buf, 6), "GPOUT");
     CIO_printConsoleUnit("3V3_1_EN ", "PB22 / 0", "3.3V_1 on", getGPIOFun(retS, buf, 7), "GPOUT");
     CIO_printConsoleUnit("1V8_EN   ", "PB10 / 0", "1.8V on", getGPIOFun(retS, buf, 1), "GPOUT");
     CIO_printConsoleUnit("1V5_EN   ", "PB11 / 0", "1.5V on", getGPIOFun(retS, buf, 2), "GPOUT");
     CIO_printConsoleUnit("1V02_EN_0", "PB13 / 0", "1.02V_0 on", getGPIOFun(retS, buf, 3), "GPOUT");
     CIO_printConsoleUnit("1V02_EN_1", "PB23 / 0", "1.02V_1 on", getGPIOFun(retS, buf, 4), "GPOUT");
-    CIO_printConsoleUnit("1V0_EN_0 ", "PB12 / 0", "1.02V_0 on", getGPIOFun(retS, buf, 8), "GPOUT");
-    CIO_printConsoleUnit("1V0_EN_1 ", "PB17 / 0", "1.02V_1 on", getGPIOFun(retS, buf, 9), "GPOUT");
+    CIO_printConsoleUnit("1V0_EN_0 ", "PB12 / 0", "1.0V_0 on", getGPIOFun(retS, buf, 8), "GPOUT");
+    CIO_printConsoleUnit("1V0_EN_1 ", "PB17 / 0", "1.0V_1 on", getGPIOFun(retS, buf, 9), "GPOUT");
 #elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_S)
     CIO_printConsoleUnit("PWR1_ON  ", "PA8  / 0", "Power 1 on", getGPIOFun(retS, buf, 6), "GPOUT");
     CIO_printConsoleUnit("PWR2_ON  ", "PA9  / 0", "Power 2 on", getGPIOFun(retS, buf, 7), "GPOUT");
@@ -249,17 +249,17 @@ int get_gpout_data(void)
     CIO_printConsoleUnit("3V3_EN   ", "PB13 / 0", "3.3V on", getGPIOFun(retS, buf, 0), "GPOUT");
     CIO_printConsoleUnit("1V8_EN   ", "PB14 / 0", "1.8V on", getGPIOFun(retS, buf, 1), "GPOUT");
     CIO_printConsoleUnit("1V5_EN   ", "PB15 / 0", "1.5V on", getGPIOFun(retS, buf, 2), "GPOUT");
-    CIO_printConsoleUnit("1V02_EN_0", "PB16 / 0", "1.02V on", getGPIOFun(retS, buf, 3), "GPOUT");
+    CIO_printConsoleUnit("1V02_EN_0", "PB16 / 0", "1.02V on (BROKEN! MISREAD!)", getGPIOFun(retS, buf, 3), "GPOUT");
     CIO_printConsoleUnit("0V9_EN   ", "PB17 / 0", "0.9V on", getGPIOFun(retS, buf, 4), "GPOUT");
     CIO_printConsoleUnit("CONTROL  ", "PA14 / 0", "Battery power on", getGPIOFun(retS, buf, 8), "GPOUT");
-#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_48GE_FS)
+#elif defined(CONFIG_ARCH_BOARD_APC3_ARLAN_24GE_FS)
     CIO_printConsoleUnit("5V0_EN   ", "PB14 / 0", "5.0V on", getGPIOFun(retS, buf, 4), "GPOUT");
     CIO_printConsoleUnit("3V3_EN   ", "PB15 / 0", "3.3V on", getGPIOFun(retS, buf, 0), "GPOUT");
     CIO_printConsoleUnit("3V3_0_EN ", "PB16 / 0", "3.3V_0 on", getGPIOFun(retS, buf, 5), "GPOUT");
     CIO_printConsoleUnit("1V8_EN   ", "PB10 / 0", "1.8V on", getGPIOFun(retS, buf, 1), "GPOUT");
     CIO_printConsoleUnit("1V5_EN   ", "PB11 / 0", "1.5V on", getGPIOFun(retS, buf, 2), "GPOUT");
-    CIO_printConsoleUnit("1V02_EN_0", "PB13 / 0", "1.02V_0 on", getGPIOFun(retS, buf, 3), "GPOUT");
-    CIO_printConsoleUnit("1V0_EN_0 ", "PB12 / 0", "1.02V_0 on", getGPIOFun(retS, buf, 6), "GPOUT");
+    CIO_printConsoleUnit("1V02_EN_0", "PB13 / 0", "1.0V_0 on", getGPIOFun(retS, buf, 3), "GPOUT");
+    CIO_printConsoleUnit("1V0_EN_0 ", "PB12 / 0", "1.0V_0 on", getGPIOFun(retS, buf, 6), "GPOUT");
 #endif
     close(fd);
 

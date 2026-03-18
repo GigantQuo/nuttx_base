@@ -126,7 +126,6 @@ static inline int SYS2_check_ACC(void)
         if (prev_raw != VALID_BYTE(raw)) {
             _info("ACC AC_OK is gone!");
         }
-        ret = 0;
     } else if (!(BAT_LOW(raw))) /* BAT_LOW */
     {
         if (prev_raw != VALID_BYTE(raw)) {
